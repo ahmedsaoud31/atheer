@@ -1,0 +1,32 @@
+{
+    "name": "ahmedsaoud31/atheer",
+    "description": "Atheer is a free Laravel Dashboard Development package without learn new way to use an admin panel.",
+    "license": "MIT",
+	"keywords": [],
+	"autoload": {
+		"psr-4": {
+		  "Atheer\\": "src/"
+		}
+	},
+	"require": {
+		"php": ">=7.0",
+		"laravel/framework": ">=10.0"
+	},
+	"authors": [
+		{
+		  "name": "Ahmed Aboelsaoud",
+		  "email": "ahmedsaoud31@gmail.com"
+		}
+	],
+	"extra": {
+		"laravel": {
+			"providers": [
+				"Atheer\\AtheerServiceProvider"
+			],
+			"aliases": {
+				"Atheer": "Atheer\\Facades"
+			}
+		}
+	},
+	"minimum-stability": "dev"
+}
