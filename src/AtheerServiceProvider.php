@@ -21,7 +21,7 @@ class AtheerServiceProvider extends ServiceProvider
             __DIR__.'/../app/Http/Controllers/AtheerController.php' => app_path('Http/Controllers/AtheerController.php'),
             __DIR__.'/../resources/views/atheer' => resource_path('views/vendor/atheer'),
             __DIR__.'/../lang' => base_path('lang'),
-            __DIR__.'/../public/atheer' => public_path('/atheer'),
+            __DIR__.'/../public/themes/tabler' => public_path('/themes/tabler'),
             __DIR__.'/../routes' => base_path('/routes'),
         ]);
         if ($this->app->runningInConsole()) {
