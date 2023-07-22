@@ -1,0 +1,109 @@
+<?php
+
+namespace App\Http\Controllers\Atheer\{{ groupUpperName }};
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Repositories\Atheer\{{ groupUpperName }}\{{ itemUpperName }}Repository;
+
+use App\Http\Requests\Atheer\{{ groupUpperName }}\{{ itemUpperName }}\StoreRequest;
+use App\Http\Requests\Atheer\{{ groupUpperName }}\{{ itemUpperName }}\UpdateRequest;
+
+class {{ itemUpperName }}Controller extends Controller
+{
+    protected $data = [];
+    protected $path;
+    protected $model;
+
+    public function __construct()
+    {
+        $this->path = 'atheer::groups.{{ groupLowerName }}.{{ itemLowerName }}';
+        $this->data['path'] = $this->path;
+        $this->repository = new {{ itemUpperName }}Repository;
+        $this->model = $this->repository->model();
+        $this->data['model'] = $this->model;
+        $this->data['route'] = 'atheer.{{ groupLowerName }}.{{ itemLowerName }}';
+        $this->data['group'] = '{{ groupLowerName }}';
+        $this->data['item'] = '{{ itemLowerName }}';
+        $this->data['name'] = '{{ itemSingularLowerName }}';
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $this->data['records'] = $this->model->query()->paginate(10);
+        return view("{$this->data['path']}.index", $this->data);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        if(request()->ajax()){
+            return view("{$this->data['path']}.forms.create", $this->data)->render();
+        }else{
+            return view("{$this->data['path']}.forms.create", $this->data);
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StoreRequest $request)
+    {
+        $this->repository->create($request->validated());
+        if(request()->ajax()){
+            return response()->json(['alert-success' => __("Data created successfully")], 200);
+        }else{
+            request()->session()->flash('alert-success', __("Data created successfully"));
+            return redirect()->route("{$this->data['route']}.index");
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $this->data['model'] = $this->repository->firstOrFail($id);
+        if(request()->ajax()){
+            return view("{$this->data['path']}.forms.form", $this->data)->render();
+        }else{
+            return view("{$this->data['path']}.forms.edit", $this->data);
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdateRequest $request, string $id)
+    {
+        $record = $this->repository->firstOrFail($id);
+        $this->repository->update($record, $request->validated());
+        if(request()->ajax()){
+            return response()->json(['alert-success' => __("Data updated successfully")], 200);
+        }else{
+            request()->session()->flash('alert-success', __("Data updated successfully"));
+            return redirect()->route("{$this->data['route']}.edit", $id);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
+}

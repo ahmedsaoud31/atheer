@@ -1,7 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AtheerController;
+use App\Http\Controllers\Atheer\AtheerController;
+use App\Http\Controllers\Atheer\Auth\LoginController;
+use App\Http\Controllers\Atheer\Auth\RegisterController;
+use App\Http\Controllers\Atheer\Auth\ForgotPasswordController;
+use Atheer\Facades\Atheer;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,9 +16,7 @@ use App\Http\Controllers\AtheerController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-$url_name = config('atheer.dashboard_name');
-
+Route::resource('/cccccccccc', ForgotPasswordController::class);
 Route::get('/change-layout/{layout}', function ($layout) {
     if(in_array($layout, config('atheer.layouts'))){
       Cache::forever('atheer_layout', $layout);
@@ -29,5 +31,20 @@ Route::get('/change-locale/{locale}', function ($locale) {
     return redirect(url()->previous());
 });
 
-Route::get($url_name, [AtheerController::class, 'index']);
-Route::get($url_name .'/{page}', [AtheerController::class, 'page']);
+$url_name = config('atheer.dashboard_name');
+Route::name('atheer.')->middleware(['web'])->prefix($url_name)->group(function () {
+  Route::get('/test', function () {
+      
+  });
+  Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+  Route::resource('/login', LoginController::class, ['names' => ['index' => 'login']]);
+  Route::resource('/register', RegisterController::class, ['names' => ['index' => 'register']]);
+  Route::middleware(['atheer-auth'])->group(function () {
+    Route::resource('/', AtheerController::class);
+    foreach(Atheer::routeGroups() as $group_name){
+      Route::name("{$group_name}.")->prefix($group_name)
+            ->group(__DIR__."/atheer/{$group_name}.php");
+    }
+    Route::get('/{page}', [AtheerController::class, 'page']);
+  });
+});

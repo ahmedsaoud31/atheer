@@ -1,0 +1,45 @@
+<?php
+
+namespace App\Repositories\Atheer\{{ groupUpperName }};
+
+use App\Models{{ modelNameSpace }}\{{ itemUpperName }} as MainModel;
+
+class {{ itemUpperName }}Repository
+{
+    protected $fillable = {{ fillable }};
+    
+    public function model()
+    {
+        return new MainModel;
+    }
+
+    public function query()
+    {
+        return $this->model()->query();
+    }
+
+    public function create($inputs)
+    {
+        return $this->model()->insert([$inputs]);
+    }
+
+    public function update($record, $inputs)
+    {
+        return $record->fillable(array_merge($record->getFillable(), $this->fillable))->fill($inputs)->save();
+    }
+
+    public function byId($id)
+    {
+        return $this->query()->whereId($id)->first();
+    }
+    
+    public function firstOrFail($id)
+    {
+        return $this->query()->whereId($id)->firstOrFail();
+    }
+
+    public function deleteById($id)
+    {
+        return $record = $this->byId($id)?$record->delete():false;
+    }
+}
