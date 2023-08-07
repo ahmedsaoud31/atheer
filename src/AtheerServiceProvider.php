@@ -10,6 +10,7 @@ use Illuminate\Pagination\Paginator;
 use Atheer\Console\Commands\AtheerCommand;
 use Atheer\Console\Commands\MakeCommand;
 use Atheer\Console\Commands\DeleteCommand;
+use Atheer\Facades\Atheer;
 use Cache;
 
 class AtheerServiceProvider extends ServiceProvider
@@ -74,7 +75,7 @@ class AtheerServiceProvider extends ServiceProvider
         }*/
 
         if($locale = Cache::get('locale')){
-            if(in_array($locale, ['ar', 'en'])){
+            if(in_array($locale, Atheer::languageCodes())){
                 Config::set('app.locale', $locale);
             }
         } 

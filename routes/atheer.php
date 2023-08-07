@@ -26,14 +26,14 @@ Route::get('/change-layout/{layout}', function ($layout) {
 });
 
 Route::get('/change-locale/{locale}', function ($locale) {
-    if(in_array($locale, ['ar', 'en'])){
+    if(in_array($locale, Atheer::languageCodes())){
       Cache::forever('locale', $locale);
     }
     return redirect(url()->previous());
 });
 
 Route::get('/test', function () {
-    dd(Atheer::languages());
+    dd(Atheer::getLocale());
 });
 
 $url_name = config('atheer.dashboard_name');

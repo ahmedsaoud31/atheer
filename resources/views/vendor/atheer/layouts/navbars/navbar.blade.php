@@ -11,15 +11,24 @@
   @include('atheer::layouts.navbars.groups.'.$group_name)
 @endforeach
 
-<li class="nav-item">
-  <a class="nav-link" href="{{ url('/change-locale') . '/' . (app()->getLocale() == 'en' ? 'ar' : 'en') }}">
-      @include('atheer::tabler.icons.svg.language')
-      <span class="nav-link-title">
-        @if(app()->getLocale() == 'en')
-        العربية
-        @else
-        English
-        @endif
-      </span>
-    </a>
+<li class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false" >
+    <span class="nav-link-icon d-md-none d-lg-inline-block">
+    @include("atheer::tabler.icons.svg.language")
+    </span>
+    <span class="nav-link-title">
+      {{ __('Languages') }}
+    </span>
+  </a>
+  <div class="dropdown-menu">
+    <div class="dropdown-menu-columns">
+      <div class="dropdown-menu-column">
+      @foreach(Atheer::languages() as $lang)
+        <a class="dropdown-item" href="{{ url('/change-locale') . '/' . $lang->code }}">
+          {{ $lang->nativeName }}
+        </a>
+      @endforeach
+      </div>
+    </div>
+  </div>
 </li>

@@ -3,7 +3,7 @@
 	  <div class="card">
 	    <div class="card-header" id="atheerCreate">
 	      <a href="{{ route("{$atheer->route}.create") }}" class="btn btn-primary create">
-	      	{{ __("Create") }} {{ __($atheer->name) }} {{ __("new") }}
+	      	{{ __("Create") }} {{ __($atheer->name) }}
 	      	<div class="spinner-border spinner-border-sm m-0 ms-auto d-none"></div>
 	      </a>
 	    </div>

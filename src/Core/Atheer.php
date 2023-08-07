@@ -174,6 +174,13 @@ class Atheer
         return $languages;
     }
 
+    public function languageCodes(): array
+    {
+        return Arr::map($this->languages(), function ($value, $key) {
+                    return $value->code;
+                });
+    }
+
     public function getLocale()
     {
         $all_languages = (new Language)->all();;
