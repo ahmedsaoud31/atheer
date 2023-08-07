@@ -8,7 +8,7 @@
       <div class="row g-2 align-items-center">
         <div class="col">
           <h2 class="page-title">
-            {{ __('Edit') }} {{ __($name) }} {{ __('form') }}
+            {{ __('Edit') }} {{ __($atheer->name) }}
           </h2>
         </div>
       </div>
@@ -16,13 +16,18 @@
   </div>
   <div class="page-body">
     <div class="container-xl">
+      <!-- Flash message here -->
+      @include("atheer::support.templates.widgets.session-alert")
+    	
       <!-- Content here -->
 		<div class="card">
-			<form method="post" action="{{ route("{$route}.update", $model->id) }}">
-				@csrf
+			<form method="post" action="{{ route("{$atheer->route}.update", $model->id) }}">
 				@method('PUT')
 				<div class="card-body">
-					@include("atheer::groups.{$group}.{$item}.forms.form")
+					<!-- All form errors here -->
+		      @include("atheer::support.templates.widgets.form-alert")
+
+					@include("{$atheer->view}.forms.form")
 				</div>
 				<div class="card-footer">
 					<div class="row align-items-center">

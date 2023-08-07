@@ -1,1 +1,1 @@
-<x-atheer-components::inputs.textarea name="{{name}}" :label="__('{{title}}')" :placeholder="__('Enter {{title}} ...')" :model="$model" />
+<x-atheer-components::inputs.textarea class="mb-3" name="{{name}}" :label="__('{{title}}')" :placeholder="__('Enter').' '.__('{{name}}').' ...'" :model="$model" />

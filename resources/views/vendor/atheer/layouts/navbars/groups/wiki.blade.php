@@ -1,13 +1,14 @@
-<li class="nav-item dropdown {{ request()->page == $group_name?'active':'' }}">
-  <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false" >
+@php($active = (request()->segment(2) == $group_name))
+<li class="nav-item dropdown {{ $active ? 'active' : '' }}">
+  <a class="nav-link dropdown-toggle {{ $active ? 'show' : '' }}" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="{{ $active ? 'true' : 'false' }}" >
     <span class="nav-link-icon d-md-none d-lg-inline-block">
-    @include("atheer::icons.svg.star")
+    @include("atheer::tabler.icons.svg.star")
     </span>
     <span class="nav-link-title">
       {{ __(ucfirst($group_name)) }}
     </span>
   </a>
-  <div class="dropdown-menu">
+  <div class="dropdown-menu {{ $active && in_array(config('atheer.layout'), config('atheer.vertical_layouts')) ? 'show' : '' }}">
     <div class="dropdown-menu-columns">
       <div class="dropdown-menu-column">
       @foreach(Atheer::navbarItems($group_name) as $item_name)

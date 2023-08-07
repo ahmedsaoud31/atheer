@@ -2,6 +2,14 @@
 
 namespace Atheer\Core;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+
+use Atheer\Console\Commands\Core\Make;
+
+use Atheer\Core\Language;
+
 class Atheer
 {   
     protected string $path = '';
@@ -15,7 +23,7 @@ class Atheer
         }
     }
 
-    public function toSelect($data, string $option_value_name = 'id', string $option_text_name = 'name', string $option_text_name2 = 'title'): array
+    public function optionsFormat(array | object $data, string | callable $value = 'id', string | callable $text = 'name'): array
     {
         $out = [];
         if (is_array($data) && array_values($data) === $data){
@@ -26,16 +34,31 @@ class Atheer
                 $out[] = $obj;
             }
         }else{
-            foreach ($data as $record) {
+            foreach ($data as $key=>$record) {
                 $obj = (object)[];
-                $obj->value = $record->{$option_value_name}?$record->{$option_value_name}:'';
-                $obj->text = $record->{$option_text_name}?$record->{$option_text_name}:'';
-                if($record->{$option_text_name2}){
-                    $obj->text .= " - (" . $record->$option_text_name2 . ")";
+                if(is_string($record)){
+                    $obj->value = $key;
+                    $obj->text = $record;
+                }else{
+                    if(is_callable($value)){
+                        $obj->value = $value($record);
+                    }else{
+                        $obj->value = $record->{$value} ?? '';
+                    }
+                    if(is_callable($text)){
+                        $obj->text = $text($record);
+                    }else{
+                        if($text == 'name' && !isset($record->{$text})){
+                            $obj->text = $record->title ?? '';
+                        }else{
+                            $obj->text = $record->{$text} ?? '';
+                        }
+                    }
                 }
                 $out[] = $obj;
             }
         }
+        return $out;
     }
 
     public function navbarGroups()
@@ -91,4 +114,77 @@ class Atheer
     {
         return explode('.', basename($path))[0];
     }
+
+    public function url(): string
+    {
+        return url('/') .'/'. config('atheer.dashboard_name');
+    }
+
+    public function publicUrl(): string
+    {
+        return url('/atheer_public');
+    }
+
+    public function getTables(): array
+    {
+        $make = new make;
+        $names = [];
+        foreach($make->getGroupNames() as $group_name){
+            $names = array_merge($names, $make->getGroupTables($group_name));
+        }
+        return $names;
+    }
+
+    public function getPermissions(): array
+    {
+        return (new make)->getPermissions();
+    }
+
+    public function isAtheerPermission($permission): bool
+    {
+        foreach($this->getPermissions() as $name){
+            foreach($this->getTables() as $table){
+                if($permission == "{$name} {$table}"){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public function languages(): array
+    {
+        $path = "{$this->path}/lang/*.*";
+        $all_languages = (new Language)->all();;
+        $languages = [];
+        foreach(glob($path) as $file) {
+            $name = basename($file);
+            $name = explode('.', $name);
+            if(isset($name[1]) && $name[1] == 'json'){
+                if(isset($all_languages->{$name[0]})){
+                    $temp = $all_languages->{$name[0]};
+                    $temp->code = $name[0];
+                    $languages[] = $temp;
+                }
+            }
+        }
+        $temp = $all_languages->en;
+        $temp->code = 'en';
+        $languages[] = $temp;
+        return $languages;
+    }
+
+    public function getLocale()
+    {
+        $all_languages = (new Language)->all();;
+        if(isset($all_languages->{app()->getLocale()})){
+            $temp = $all_languages->{app()->getLocale()};
+            $temp->code = app()->getLocale();
+        }else{
+            $temp = $all_languages->en;
+            $temp->temp = 'en';
+        }
+        return $temp;
+    }
+
 }

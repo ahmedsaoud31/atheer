@@ -1,1 +1,1 @@
-<x-atheer-components::inputs.select class="mb-3" name="{{name}}" :label="__('{{title}}')" :placeholder="__('Choose {{Title}}')" :model="$model"/>
+<x-atheer-components::inputs.select class="mb-3" name="{{name}}" :label="__('{{title}}')" :placeholder="__('Choose').' '.__('{{name}}')" :model="$model" :options="{{options}}" :preoptions="[]"/>

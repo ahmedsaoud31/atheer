@@ -33,7 +33,11 @@ trait Support
     {
         $names = [];
         foreach(File::directories($this->view_path) as $dir){
-            $names[] = strtolower(File::basename($dir));
+            $name = strtolower(File::basename($dir));
+            if(in_array($name, ['auth', 'settings'])){
+                continue;
+            }
+            $names[] = $name;
         }
         return $names;
     }
@@ -56,6 +60,7 @@ trait Support
             (object)['prefix' => 'Controller', 'path' => "{$this->controller_path}/{$group_name}/$item_upper_name"],
             (object)['prefix' => 'Request', 'path' => "{$this->request_path}/{$group_name}/$item_upper_name"],
             (object)['prefix' => 'Repository', 'path' => "{$this->repository_path}/{$group_name}/$item_upper_name"],
+            //(object)['prefix' => 'Policy', 'path' => "{$this->policy_path}/$item_upper_name"],
             (object)['prefix' => 'Route', 'path' => "{$this->route_path}/".strtolower($group_name)."/{$item_lower_name}"],
             (object)['prefix' => 'Navbar', 'path' => "{$this->navbar_path}/".strtolower($group_name)."/{$item_lower_name}"],
             (object)['prefix' => 'View', 'path' => "{$this->view_path}/".strtolower($group_name)."/{$item_lower_name}"],
@@ -75,6 +80,42 @@ trait Support
         return $names;
     }
 
+    public function getNotUsedModelNames($group_name): array
+    {
+        $names = [];
+        foreach($this->getModelNames() as $name){
+            $model = "App\Models\\{$name}";
+            $model = new $model;
+            if(in_array($model->getTable(), $this->getGroupTables($group_name)) || $model->getTable() == 'users'){
+                continue;
+            }
+            $names[] = $name;
+        }
+        return $names;
+    }
+
+    public function getGroupTables($group_name): array
+    {
+        $group_name = Str::ucfirst($group_name);
+        $names = [];
+        foreach(File::allFiles(base_path()."/app/Repositories/Atheer/{$group_name}") as $item){
+            $temp = explode('\\', $item->getRealPath());
+            $temp = end($temp);
+            $temp = Str::replaceLast('Repository.php', '', $temp);
+            $names[] = (string) Str::of($temp)->lower()->plural()->toHtmlString();
+        }
+        return $names;
+    }
+
+    public function getGroupModels($group_name): array
+    {
+        $names = [];
+        foreach($this->getGroupTables($group_name) as $name){
+            $names[] = (string) Str::of($name)->ucfirst()->singular()->toHtmlString();
+        }
+        return $names;
+    }
+
     public function getItemNames(): array
     {
         $names = [];
@@ -85,6 +126,11 @@ trait Support
             }
         }
         return $names;
+    }
+
+    public function getPermissions(): array
+    {
+        return ['view', 'add', 'edit', 'delete'];
     }
 
     protected function setInfo($prefix = 'Default', $alert = 'default', $line = '')

@@ -59,13 +59,21 @@ class MakeCommand extends Command
                 break;
             case "CRUD":
                 $groups = (new make)->getGroupNames();
+                if(empty($groups)){
+                    $this->error('Please create at least one group first.');
+                    break;
+                }
                 $group_name = $this->choice(
                     'Which group you want to create the CRUD in it?',
                     $groups,
                     $groups[0] ?? ''
                 );
                 while(true){
-                    $models = (new make)->getModelNames();
+                    $models = (new make)->getNotUsedModelNames($group_name);
+                    if(empty($models)){
+                        $this->error('No models or No models without CURD.');
+                        break;
+                    }
                     $model_name = $this->choice(
                         "Which Model you want to create a CRUD for it in ({$group_name}) group?",
                         $models,

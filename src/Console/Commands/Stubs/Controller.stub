@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Atheer\{{ groupUpperName }};
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Str;
 use App\Repositories\Atheer\{{ groupUpperName }}\{{ itemUpperName }}Repository;
 
 use App\Http\Requests\Atheer\{{ groupUpperName }}\{{ itemUpperName }}\StoreRequest;
@@ -12,20 +13,26 @@ use App\Http\Requests\Atheer\{{ groupUpperName }}\{{ itemUpperName }}\UpdateRequ
 class {{ itemUpperName }}Controller extends Controller
 {
     protected $data = [];
-    protected $path;
+    protected $view;
+    protected $route;
     protected $model;
 
     public function __construct()
     {
-        $this->path = 'atheer::groups.{{ groupLowerName }}.{{ itemLowerName }}';
-        $this->data['path'] = $this->path;
+        $this->view = 'atheer::groups.{{ groupLowerName }}.{{ itemLowerName }}';
+        $this->route = 'atheer.{{ groupLowerName }}.{{ itemLowerName }}';
         $this->repository = new {{ itemUpperName }}Repository;
         $this->model = $this->repository->model();
         $this->data['model'] = $this->model;
-        $this->data['route'] = 'atheer.{{ groupLowerName }}.{{ itemLowerName }}';
-        $this->data['group'] = '{{ groupLowerName }}';
-        $this->data['item'] = '{{ itemLowerName }}';
-        $this->data['name'] = '{{ itemSingularLowerName }}';
+        
+        $toBlade =  (object)[];
+        $toBlade->view = $this->view;
+        $toBlade->route = $this->route;
+        $toBlade->group = '{{ groupLowerName }}';
+        $toBlade->item = '{{ itemLowerName }}';
+        $toBlade->name = '{{ itemSingularLowerName }}';
+        $toBlade->title = __((string)Str::ucfirst($toBlade->item));
+        $this->data['atheer'] = $toBlade;
     }
 
     /**
@@ -33,8 +40,9 @@ class {{ itemUpperName }}Controller extends Controller
      */
     public function index()
     {
-        $this->data['records'] = $this->model->query()->paginate(10);
-        return view("{$this->data['path']}.index", $this->data);
+        $this->authorize('view', $this->model);
+        $this->data['records'] = $this->model->query()->latest()->paginate(10);
+        return view("{$this->view}.index", $this->data);
     }
 
     /**
@@ -42,10 +50,12 @@ class {{ itemUpperName }}Controller extends Controller
      */
     public function create()
     {
+        $this->authorize('view', $this->model);
         if(request()->ajax()){
-            return view("{$this->data['path']}.forms.create", $this->data)->render();
+            $body = view("{$this->view}.forms.form", $this->data)->render();
+            return response()->json(['body' => $body], 200);
         }else{
-            return view("{$this->data['path']}.forms.create", $this->data);
+            return view("{$this->view}.forms.create", $this->data);
         }
     }
 
@@ -54,12 +64,15 @@ class {{ itemUpperName }}Controller extends Controller
      */
     public function store(StoreRequest $request)
     {
-        $this->repository->create($request->validated());
+        $this->authorize('create', $this->model);
+        $id = $this->repository->create($request->validated());
+        $this->data['record'] = $this->repository->firstOrFail($id);
         if(request()->ajax()){
-            return response()->json(['alert-success' => __("Data created successfully")], 200);
+            $body = view("{$this->view}.tables.row", $this->data)->render();
+            return response()->json(['message' => __("Data created successfully"), 'body' => $body, 'id' => $id], 200);
         }else{
             request()->session()->flash('alert-success', __("Data created successfully"));
-            return redirect()->route("{$this->data['route']}.index");
+            return redirect()->route("{$this->route}.index");
         }
     }
 
@@ -68,7 +81,7 @@ class {{ itemUpperName }}Controller extends Controller
      */
     public function show(string $id)
     {
-        //
+        $this->authorize('view', $this->model);
     }
 
     /**
@@ -76,11 +89,13 @@ class {{ itemUpperName }}Controller extends Controller
      */
     public function edit(string $id)
     {
-        $this->data['model'] = $this->repository->firstOrFail($id);
+        $this->data['model'] = $this->model = $this->repository->firstOrFail($id);
+        $this->authorize('view', $this->model);
         if(request()->ajax()){
-            return view("{$this->data['path']}.forms.form", $this->data)->render();
+            $body = view("{$this->view}.forms.form", $this->data)->render();
+            return response()->json(['body' => $body], 200);
         }else{
-            return view("{$this->data['path']}.forms.edit", $this->data);
+            return view("{$this->view}.forms.edit", $this->data);
         }
     }
 
@@ -89,13 +104,16 @@ class {{ itemUpperName }}Controller extends Controller
      */
     public function update(UpdateRequest $request, string $id)
     {
-        $record = $this->repository->firstOrFail($id);
-        $this->repository->update($record, $request->validated());
+        $this->model = $this->repository->firstOrFail($id);
+        $this->authorize('update', $this->model);
+        $this->repository->update($this->model, $request->validated());
         if(request()->ajax()){
-            return response()->json(['alert-success' => __("Data updated successfully")], 200);
+            $this->data['record'] = $this->repository->first($id);
+            $body = view("{$this->view}.tables.row", $this->data)->render();
+            return response()->json(['message' => __("Data updated successfully"), 'body' => $body], 200);
         }else{
             request()->session()->flash('alert-success', __("Data updated successfully"));
-            return redirect()->route("{$this->data['route']}.edit", $id);
+            return redirect()->route("{$this->route}.edit", $id);
         }
     }
 
@@ -104,6 +122,14 @@ class {{ itemUpperName }}Controller extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $this->model = $this->repository->firstOrFail($id);
+        $this->authorize('delete', $this->model);
+        $this->model->delete();
+        if(request()->ajax()){
+            return response()->json(['message' => __("Data deleted successfully"), 'body' => ''], 200);
+        }else{
+            request()->session()->flash('alert-success', __("Data deleted successfully"));
+            return redirect()->route("{$this->route}.index");
+        }
     }
 }

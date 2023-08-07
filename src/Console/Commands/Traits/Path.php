@@ -9,6 +9,7 @@ trait Path
     protected string $controller_path = '';
     protected string $request_path = '';
     protected string $repository_path = '';
+    protected string $policy_path = '';
     protected string $route_path = '';
     protected string $navbar_path = '';
     protected string $view_path = '';
@@ -25,6 +26,7 @@ trait Path
         $this->controller_path = base_path()."/app/Http/Controllers/Atheer";
         $this->request_path = base_path()."/app/Http/Requests/Atheer";
         $this->repository_path = base_path()."/app/Repositories/Atheer";
+        $this->policy_path = base_path()."/app/Policies";
         $this->route_path = "{$this->path}/routes/atheer";
         $this->navbar_path = "{$this->path}/resources/views/vendor/atheer/layouts/navbars/groups";
         $this->view_path = "{$this->path}/resources/views/vendor/atheer/groups";

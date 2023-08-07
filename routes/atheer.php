@@ -16,7 +16,8 @@ use Atheer\Facades\Atheer;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::resource('/cccccccccc', ForgotPasswordController::class);
+
+Route::resource('/forgot-password', ForgotPasswordController::class);
 Route::get('/change-layout/{layout}', function ($layout) {
     if(in_array($layout, config('atheer.layouts'))){
       Cache::forever('atheer_layout', $layout);
@@ -31,20 +32,25 @@ Route::get('/change-locale/{locale}', function ($locale) {
     return redirect(url()->previous());
 });
 
+Route::get('/test', function () {
+    dd(Atheer::languages());
+});
+
 $url_name = config('atheer.dashboard_name');
 Route::name('atheer.')->middleware(['web'])->prefix($url_name)->group(function () {
-  Route::get('/test', function () {
-      
-  });
+
+
   Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
   Route::resource('/login', LoginController::class, ['names' => ['index' => 'login']]);
   Route::resource('/register', RegisterController::class, ['names' => ['index' => 'register']]);
+
   Route::middleware(['atheer-auth'])->group(function () {
     Route::resource('/', AtheerController::class);
+
     foreach(Atheer::routeGroups() as $group_name){
       Route::name("{$group_name}.")->prefix($group_name)
             ->group(__DIR__."/atheer/{$group_name}.php");
     }
-    Route::get('/{page}', [AtheerController::class, 'page']);
   });
+
 });

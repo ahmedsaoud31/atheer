@@ -5,8 +5,8 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <h1 class="navbar-brand navbar-brand-autodark">
-        <a href="{{ config('atheer.dashboard_name') }}">
-          <img src="{{ asset('/') }}themes/tabler/static/logo-white.svg" width="110" height="32" alt="Tabler" class="navbar-brand-image">
+        <a href="{{ Atheer::url() }}">
+          <img src="{{ Atheer::publicUrl() }}//static/logo-white.svg" width="150" height="50" alt="Atheer">
         </a>
       </h1>
       <div class="navbar-nav flex-row d-lg-none">

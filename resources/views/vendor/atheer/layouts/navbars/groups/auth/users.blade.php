@@ -1,11 +1,5 @@
-@php($name = 'users')
-<li class="nav-item {{ request()->page == $name?'active':'' }}">
-  <a class="nav-link" href="{{ $menu->href }}" >
-    <span class="nav-link-icon d-md-none d-lg-inline-block">
-    @include("atheer::icons.svg.star)
-    </span>
-    <span class="nav-link-title">
-      {{ __($name) }}
-    </span>
-  </a>
-</li>
+@if(auth()->user()->can("view {$item_name}") || auth()->user()->hasRole('Super Admin'))
+<a class="dropdown-item {{ request()->segment(3) == $item_name ? 'active' : '' }}" href="{{ route("atheer.{$group_name}.{$item_name}.index") }}">
+  {{ __(ucfirst($item_name)) }}
+</a>
+@endif

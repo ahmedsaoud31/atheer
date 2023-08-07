@@ -6,7 +6,5 @@
 			placeholder="{{ $placeholder }}"
 			value="{{ $value }}"
 	>
-	@error($name)
-	    <div class="invalid-feedback">{{ $message }}</div>
-	@enderror
+	<div class="invalid-feedback" data-name="{{ $name }}">{{ $errors->has($name) ? $errors->first($name) : '' }}</div>
 </div>

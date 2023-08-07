@@ -67,11 +67,11 @@ class AtheerServiceProvider extends ServiceProvider
 
     private function cacheSettings()
     {
-        if($layout = Cache::get('atheer_layout')){
+        /*if($layout = Cache::get('atheer_layout')){
             if(in_array($layout, config('atheer.layouts'))){
                 Config::set('atheer.layout', $layout);
             }
-        }
+        }*/
 
         if($locale = Cache::get('locale')){
             if(in_array($locale, ['ar', 'en'])){

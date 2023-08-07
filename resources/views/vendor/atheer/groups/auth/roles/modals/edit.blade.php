@@ -1,0 +1,2 @@
+<!-- If you want to customise create modal copy content of "atheer::support.templates.modals.modal" here and customise it -->
+@include('atheer::support.templates.modals.modal', ['modalID' => 'editModal', 'title' => __('Edit form'), 'submitTitle' => __('Update')])

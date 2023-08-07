@@ -4,16 +4,17 @@ namespace Atheer\Console\Commands\Core;
 
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 use Atheer\Console\Commands\Core\Make;
+
+use App\Repositories\Atheer\Auth\PermissionRepository;
  
 class MakeCRUD extends Make
 {
-	private string $model_path = '';
-    private string $model_name = '';
-    public $model;
     public array $model_columns = [];
-    public array $model_columns_arr = [];
     public string $form = '';
     public function __construct( public string $name, public string $group_name)
 	{
@@ -32,9 +33,11 @@ class MakeCRUD extends Make
         $this->createController();
         $this->createRequests();
         $this->createRepository();
+        $this->createPolicy();
         $this->createRoutes();
         $this->createNavbars();
         $this->createViews();
+        $this->createPermissions();
         return $this;
     }
 
@@ -67,6 +70,7 @@ class MakeCRUD extends Make
             "{$this->request_path}/{$this->group_name}/{$this->name}/StoreRequest.php",
             "{$this->request_path}/{$this->group_name}/{$this->name}/UpdateRequest.php",
             "{$this->repository_path}{$this->getModelNameSpace()}/{$this->name}Repository.php",
+            "{$this->policy_path}{$this->getModelNameSpace()}/{$this->name}Policy.php",
             "{$this->route_path}/{$this->getGroupLowerName()}/{$this->getItemLowerName()}.php",
             "{$this->navbar_path}/{$this->getGroupLowerName()}/{$this->getItemLowerName()}.blade.php",
         ];
@@ -100,7 +104,7 @@ class MakeCRUD extends Make
         $stub = File::get("{$this->stubs_path}/StoreRequest.stub");
         $stub = Str::of($stub)
                    ->replace('{{ groupUpperName }}', $this->group_name)
-                   ->replace('{{ validation }}', $this->getvValidation())
+                   ->replace('{{ validation }}', $this->getValidation())
                    ->replace('{{ itemUpperName }}', $this->getItemUpperName());
         $dir = "{$this->request_path}/{$this->group_name}/{$this->name}";
         if(!File::isDirectory($dir)){
@@ -113,7 +117,7 @@ class MakeCRUD extends Make
         $stub = File::get("{$this->stubs_path}/UpdateRequest.stub");
         $stub = Str::of($stub)
                    ->replace('{{ groupUpperName }}', $this->group_name)
-                   ->replace('{{ validation }}', $this->getvValidation())
+                   ->replace('{{ validation }}', $this->getValidation())
                    ->replace('{{ itemUpperName }}', $this->getItemUpperName());
         $file = "{$dir}/UpdateRequest.php";
         File::put($file, $stub);
@@ -131,6 +135,20 @@ class MakeCRUD extends Make
         $file = "{$this->repository_path}/{$this->group_name}/{$this->name}Repository.php";
         File::put($file, $stub);
         $this->setInfo(prefix: 'Repository', alert: 'success', line: "{$file} created success.");
+    }
+
+    private function createPolicy(): void
+    {
+        $stub = File::get("{$this->stubs_path}/Policy.stub");
+        $stub = Str::of($stub)
+                   ->replace('{{ modelNameSpace }}', $this->getModelNameSpace())
+                   ->replace('{{ itemLowerName }}', $this->getItemLowerName())
+                   ->replace('{{ itemUpperName }}', $this->getItemUpperName());
+        $dir = "{$this->policy_path}/{$this->getModelNameSpace()}";
+        Storage::makeDirectory($dir);
+        $file = "{$dir}/{$this->name}Policy.php";
+        File::put($file, $stub);
+        $this->setInfo(prefix: 'Policy', alert: 'success', line: "{$file} created success.");
     }
 
     private function createRoutes(): void
@@ -156,8 +174,22 @@ class MakeCRUD extends Make
     private function createViews(): void
     {
         $this->createViewDirectories();
-        foreach(['index', 'forms/create', 'forms/edit', 'forms/form', 'tables/main', 'tables/row'] as $name){
-            $stub = File::get("{$this->stubs_path}/views/{$name}.stub");
+        foreach([
+                    'index',
+                    'forms/create', 'forms/edit', 'forms/form',
+                    'modals/create', 'modals/edit',
+                    'scripts/create', 'scripts/edit', 'scripts/delete',
+                    'tables/main', 'tables/row'
+                ] as $name){
+
+            if(in_array($name, [
+                                'modals/create', 'modals/edit', 'scripts/create',
+                                'scripts/edit', 'scripts/delete', 'tables/row'
+                                ]) && config('atheer.use_templates')){
+                $stub = File::get("{$this->stubs_path}/views/{$name}-template.stub");
+            }else{
+                $stub = File::get("{$this->stubs_path}/views/{$name}.stub");
+            }
             $stub = Str::of($stub)
                         ->replace('{{ tableHeader }}', $this->getTableHeader())
                         ->replace('{{ tableRows }}', $this->getTableRows());
@@ -166,10 +198,18 @@ class MakeCRUD extends Make
             $this->setInfo(prefix: 'View', alert: 'success', line: "{$file} created success.");
         }
     }
+
+    private function createPermissions(): void
+    {
+        foreach($this->getPermissions() as $name){
+            (new PermissionRepository)->model()->firstOrCreate(['name' => "$name {$this->model->getTable()}"]);            
+        }
+    }
    
     public function setForm($inputs): void
     {
-        $this->form = '';
+        $this->form = "@csrf\n";
+        //$this->form = "<!-- Flash message here -->\n@include(\"atheer::support.templates.widgets.form-alert\")\n";
         if($inputs){
             foreach(explode(',', $inputs) as $value) {
                 $temp = explode('=', $value);
@@ -177,20 +217,25 @@ class MakeCRUD extends Make
                     $this->error[] = "Structure error ".__LINE__;
                     return;
                 }
-                if(array_key_exists($temp[0], $this->model_columns)){
-                    if(in_array($temp[1], ['i', 'ignore'])){
-                        unset($this->model_columns[$temp[0]]);
-                    }elseif(in_array($temp[1], $this->getInputs())){
-                        $this->model_columns[$temp[0]] = $temp[1];
+                $name = $temp[0];
+                $type = $temp[1];
+                $index = array_search($name, $this->getModelColumnsArr());
+                if(in_array($name, $this->getModelColumnsArr())){
+                    if(in_array($type, ['i', 'ignore'])){
+                        unset($this->model_columns[$index]);
+                    }elseif(in_array($type, $this->getInputTypes())){
+                        $this->model_columns[$index]->type = $type;
                     }
                 }
             }
         }
-        foreach($this->model_columns as $key => $value) {
-            $stub = File::get("{$this->stubs_path}/views/inputs/{$value}.stub");
+
+        foreach($this->getModelColumns() as $item) {
+            $stub = File::get("{$this->stubs_path}/views/inputs/{$item->type}.stub");
             $this->form .= Str::of($stub)
-                                ->replace('{{name}}', $key)
-                                ->replace('{{title}}', Str::title(Str::replace('_', ' ', $key)))
+                                ->replace('{{name}}', $item->name)
+                                ->replace('{{title}}', Str::title(Str::replace('_', ' ', $item->name)))
+                                ->replace('{{options}}', $this->makeEnumOptions($item))
                                 ->toHtmlString()."\n";
 
         }
@@ -201,45 +246,6 @@ class MakeCRUD extends Make
         $file = "{$this->view_path}/".$this->getGroupLowerName()."/".$this->getItemLowerName()."/forms/form.blade.php";
         File::put($file, $this->form);
         $this->setInfo(prefix: 'Form', alert: 'success', line: "{$file} created success.");
-    }
-
-    private function getModelNameSpace()
-    {
-        $temp = explode('\\', $this->model_path);
-        array_pop($temp);
-        $temp = implode('\\', $temp);
-        if($temp){
-            $temp = '\\'.$temp;
-        }
-        return  Str::replaceLast('\\', '', $temp);
-    }
-
-    private function getModelName()
-    {
-        $temp = explode('\\', $this->model_path);
-        array_pop($temp);
-        $temp = implode('\\', $temp);
-        return $temp;
-    }
-
-    private function getItemUpperName()
-    {
-        return $this->name;
-    }
-
-    private function getItemLowerName()
-    {
-        return Str::snake(Str::plural($this->name), '-');
-    }
-
-    private function getItemSingularLowerName()
-    {
-        return Str::singular($this->getItemLowerName());
-    }
-
-    private function getGroupLowerName()
-    {
-        return Str::lower($this->group_name);
     }
 
     private function createViewDirectories()
@@ -254,7 +260,7 @@ class MakeCRUD extends Make
     private function getViewDirectories():array
     {
         $dirs = [];
-        foreach(['forms', 'tables', 'widgets'] as $dir){
+        foreach(['forms', 'modals', 'scripts', 'tables', 'widgets'] as $dir){
             $dirs[] = "{$this->view_path}/{$this->getGroupLowerName()}/{$this->getItemLowerName()}/{$dir}";
         }
         return $dirs;
@@ -263,10 +269,20 @@ class MakeCRUD extends Make
     private function getViewFiles():array
     {
         $files = [];
-        foreach(['forms', 'tables', 'widgets'] as $dir){
+        foreach(['forms', 'modals', 'scripts', 'tables', 'widgets'] as $dir){
             switch ($dir) {
                 case 'forms':
                     foreach(['form', 'create', 'edit'] as $dir2){
+                        $files[] = "{$this->view_path}/{$this->getGroupLowerName()}/{$this->getItemLowerName()}/{$dir}/{$dir2}.blade.php";
+                    }
+                    break;
+                case 'modals':
+                    foreach(['create', 'edit'] as $dir2){
+                        $files[] = "{$this->view_path}/{$this->getGroupLowerName()}/{$this->getItemLowerName()}/{$dir}/{$dir2}.blade.php";
+                    }
+                    break;
+                case 'scripts':
+                    foreach(['create', 'edit', 'delete'] as $dir2){
                         $files[] = "{$this->view_path}/{$this->getGroupLowerName()}/{$this->getItemLowerName()}/{$dir}/{$dir2}.blade.php";
                     }
                     break;
@@ -297,11 +313,38 @@ class MakeCRUD extends Make
 
     private function setTableFields():void
     {
-        $model_path = "App\Models\\{$this->model_path}";
-        $this->model = new $model_path;
-        $columns = Schema::getConnection()->getDoctrineSchemaManager()->listTableColumns($this->model->getTable());
-        //$column = Schema::getConnection()->getDoctrineColumn('table_name', 'column_name');
-        $this->setModelColumns($columns);
+        $arr = [];
+        $columns = DB::select("SHOW COLUMNS FROM {$this->model->getTable()}");
+        foreach($columns as $column){
+            $temp = (object)[];
+            $temp->name = $column->Field;
+            if(in_array($temp->name, ['id', 'created_at', 'updated_at'])){
+                continue;
+            }
+            foreach($this->getInputs() as $key=>$value){
+                foreach($value as $key2 => $value2){
+                    if(Str::startsWith($column->Type, $value2)){
+                        $temp->db_type = $value2;
+                        $temp->type = $key;
+                    }
+                }
+            }
+            if(!$temp->db_type){
+                $temp->db_type = 'varchar';
+            }
+            if(!$temp->type){
+                $temp->type = 'text';
+            }
+            if(Str::endsWith($temp->name, '_id')){
+                $temp->type = 'select';
+            }
+            $temp->enum = [];
+            if(in_array($temp->db_type, ['enum', 'set'])){
+                $temp->enum = $this->getEnum($column->Type);
+            }
+            $arr[] = $temp;
+        }
+        $this->model_columns = $arr;
     }
 
     public function getModelColumns()
@@ -309,55 +352,46 @@ class MakeCRUD extends Make
         return $this->model_columns;
     }
 
-    private function getInputType($type):string
+    private function getInputs():array
     {
-        $arr = [
-            'toggle' => ['bit', 'tinyint', 'bool', 'boolean'],
-            'text' => [
-                        'smallint', 'int', 'bigint', 'decimal', 'numeric', 'float', 'real', 'decimal', 'dec',
-                        'char', 'varchar','nchar', 'nvarchar'
-                        ],
-            'textarea' => ['text', 'ntext', 'blob', 'mediumtext', 'mediumblob', 'longtext', 'longblob'],
-            'select' => ['enum', 'set'],
-            'date' => ['date', 'datetime', 'timestamp', 'year', 'time']
-        ];
-        foreach($arr as $key=>$value){
-            if(in_array($type, $value)) return $key;
-        }
-        return 'text';
+        return [
+                'toggle' => ['bit', 'tinyint', 'bool', 'boolean'],
+                'text' => [
+                            'smallint', 'int', 'bigint', 'decimal', 'numeric', 'float', 'real', 'decimal', 'dec',
+                            'char', 'varchar','nchar', 'nvarchar'
+                            ],
+                'textarea' => ['text', 'ntext', 'blob', 'mediumtext', 'mediumblob', 'longtext', 'longblob'],
+                'select' => ['enum', 'set'],
+                'date' => ['date', 'datetime', 'timestamp', 'year', 'time']
+            ];
     }
 
-    private function setModelColumns($columns):void
+    private function getInputTypes():array
     {
-        $data = [];
-        foreach($columns as $column){
-            if(in_array($column->getName(), ['id', 'created_at', 'updated_at'])){
-                continue;
-            }
-            $data[$column->getName()] = $this->getInputType($column->getType()->getName());
-        }
-        $this->model_columns = $data;
+        [$keys, $values] = Arr::divide($this->getInputs());
+        return $keys;
+    }
+
+    private function getEnum($type):array
+    {
+        preg_match_all("/'(.*?)'/", $type, $matches);
+        return isset($matches[1])?$matches[1]:[];
     }
 
     public function getFormShema():string
     {
-        foreach ($this->model_columns as $key => $value) {
-            $arr[] = "{$key}={$value}";
+        foreach($this->getModelColumns() as $item) {
+            $arr[] = "{$item->name}={$item->type}";
         }
         return implode(',', $arr);
-    }
-
-    private function getInputs($columns):array
-    {
-        return ['toggle', 'text', 'textarea', 'select', 'date'];
     }
 
     private function getFillable(): string
     {
         if($this->modelHasColumns()){
             $arr = [];
-            foreach($this->getModelColumns() as $key=>$value){
-                $arr[] = "'{$key}'";
+            foreach($this->getModelColumns() as $item){
+                $arr[] = "'{$item->name}'";
             }
             return '[ '. implode(', ', $arr) . ' ]';
         }else{
@@ -365,14 +399,14 @@ class MakeCRUD extends Make
         }
     }
 
-    private function getvValidation(): string
+    private function getValidation(): string
     {
         if($this->modelHasColumns()){
             $arr = [];
-            foreach($this->getModelColumns() as $key=>$value){
-                $arr[] = "'{$key}' => 'required',\n";
+            foreach($this->getModelColumns() as $item){
+                $arr[] = "'{$item->name}' => 'required',";
             }
-            return "[\n". implode("\t\t\t", $arr) . "\n\t\t]";
+            return "[\n\t\t\t". implode("\n\t\t\t", $arr) . "\n\t\t]";
         }else{
             return "[]";
         }
@@ -382,14 +416,14 @@ class MakeCRUD extends Make
     {
         if($this->modelHasColumns()){
             $arr = [];
-            foreach($this->getModelColumns() as $key=>$value){
-                $title = Str::of($key)
+            foreach($this->getModelColumns() as $item){
+                $title = Str::of($item->name)
                             ->replace('_', ' ')
                             ->title()
                             ->toHtmlString();
-                $arr[] = "<th>{{ __('{$title}') }}</th>";
+                $arr[] = "<th>{{ __('{$title}') }}</th>"."\n\t\t\t\t";
             }
-            return implode(" ", $arr);
+            return implode("", $arr);
         }else{
             return "";
         }
@@ -399,12 +433,35 @@ class MakeCRUD extends Make
     {
         if($this->modelHasColumns()){
             $arr = [];
-            foreach($this->getModelColumns() as $key=>$value){
-                $arr[] = '<td>{{ Str::limit($record->'. $key . ', 30, "...") }}</td>';
+            foreach($this->getModelColumns() as $item){
+                switch($item->type) {
+                    case 'toggle':
+                        $arr[] = '<td><label class="form-switch"><input class="form-check-input" type="checkbox" {{ $record->'. $item->name .'? "checked":"" }} disabled></label></td>'."\n\t";
+                        break;
+                    default:
+                        $arr[] = '<td>{{ Str::limit($record->'. $item->name . ', 30, "...") }}</td>'."\n\t";
+                        break;
+                }
             }
-            return implode(" ", $arr);
+            return implode("", $arr);
         }else{
             return "";
         }
+    }
+
+    private function makeEnumOptions($item): string
+    {
+        $html = 'Atheer::optionsFormat([';
+        foreach($item->enum as $value){
+            $html .= "'{$value}' => '". Str::of($value)->replace('_', ' ')->replace('-', ' ')->title()->toHtmlString() ."',";
+        }
+        $html .= '])';
+        return $html;
+    }
+
+
+    private function getModelColumnsArr(): array
+    {
+        return array_column($this->getModelColumns(), 'name');
     }
 }

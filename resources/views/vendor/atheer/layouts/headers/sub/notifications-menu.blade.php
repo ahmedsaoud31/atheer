@@ -1,6 +1,7 @@
+<!--
 <div class="nav-item dropdown d-none d-md-flex me-3">
   <a href="#" class="nav-link px-0" data-bs-toggle="dropdown" tabindex="-1" aria-label="Show notifications">
-    @include('atheer::icons.svg.bell')
+    @include('atheer::tabler.icons.svg.bell')
     <span class="badge bg-red"></span>
   </a>
   <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
@@ -20,7 +21,7 @@
             </div>
             <div class="col-auto">
               <a href="#" class="list-group-item-actions">
-                @include('atheer::icons.svg.star')
+                @include('atheer::tabler.icons.svg.star')
               </a>
             </div>
           </div>
@@ -36,7 +37,7 @@
             </div>
             <div class="col-auto">
               <a href="#" class="list-group-item-actions show">
-                @include('atheer::icons.svg.star')
+                @include('atheer::tabler.icons.svg.star')
               </a>
             </div>
           </div>
@@ -52,7 +53,7 @@
             </div>
             <div class="col-auto">
               <a href="#" class="list-group-item-actions">
-                @include('atheer::icons.svg.star')
+                @include('atheer::tabler.icons.svg.star')
               </a>
             </div>
           </div>
@@ -68,7 +69,7 @@
             </div>
             <div class="col-auto">
               <a href="#" class="list-group-item-actions">
-                @include('atheer::icons.svg.star')
+                @include('atheer::tabler.icons.svg.star')
               </a>
             </div>
           </div>
@@ -77,3 +78,4 @@
     </div>
   </div>
 </div>
+-->

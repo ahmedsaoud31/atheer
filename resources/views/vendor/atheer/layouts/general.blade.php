@@ -10,11 +10,11 @@
 
         <!-- CSS files -->
         @stack('css_libs_before')
-        <link href="{{ asset('themes/tabler/css/tabler.') }}{{  $dir_flag }}min.css" rel="stylesheet"/>
-        <link href="{{ asset('tabler/css/tabler-flags.') }}{{  $dir_flag }}min.css" rel="stylesheet"/>
-        <link href="{{ asset('tabler/css/tabler-payments.') }}{{  $dir_flag }}min.css" rel="stylesheet"/>
-        <link href="{{ asset('tabler/css/tabler-vendors.') }}{{  $dir_flag }}min.css" rel="stylesheet"/>
-        <link href="{{ asset('tabler/css/demo.') }}{{  $dir_flag }}min.css" rel="stylesheet"/>
+        <link href="{{ Atheer::publicUrl() . '/themes/tabler/css/tabler.' }}{{  $dir_flag }}min.css" rel="stylesheet"/>
+        <link href="{{ Atheer::publicUrl() . '/themes/tabler/css/tabler-flags.' }}{{  $dir_flag }}min.css" rel="stylesheet"/>
+        <link href="{{ Atheer::publicUrl() . '/themes/tabler/css/tabler-payments.' }}{{  $dir_flag }}min.css" rel="stylesheet"/>
+        <link href="{{ Atheer::publicUrl() . '/themes/tabler/css/tabler-vendors.' }}{{  $dir_flag }}min.css" rel="stylesheet"/>
+        <link href="{{ Atheer::publicUrl() . '/themes/tabler/css/demo.' }}{{  $dir_flag }}min.css" rel="stylesheet"/>
         @stack('css_libs_after')
 
         <!-- Inject css -->
@@ -28,8 +28,9 @@
         @stack('libs')
 
         <!-- Tabler Core -->
-        <script src="{{ asset('tabler/js/tabler.min.js') }}" defer></script>
-        <script src="{{ asset('tabler/js/demo.min.js') }}" defer></script>
+        <script src="{{ Atheer::publicUrl() . '/themes/tabler/js/tabler.min.js' }}" defer></script>
+        <script src="{{ Atheer::publicUrl() . '/themes/tabler/js/demo.min.js' }}" defer></script>
+        <script src="{{ Atheer::publicUrl() . '/js/atheer.js' }}"></script>
 
         <!-- Inject js -->
         @stack('scripts')

@@ -9,19 +9,26 @@ use Illuminate\Support\Str;
 use Atheer\Console\Commands\Traits\Path;
 use Atheer\Console\Commands\Traits\Support;
 
-class Delete
+use App\Repositories\Atheer\Auth\PermissionRepository;
+
+class Delete extends Make
 {
-	use Path, Support;
 
     public function __construct(public string $group_name = '', public string $item_name = '')
 	{
-        $this->item_name = $item_name;
+        if($item_name){
+            $this->model_path = $item_name;
+            $item_name = explode('\\', $item_name);
+            $this->name = Str::ucfirst(end($item_name));
+        }
         $this->group_name = Str::ucfirst($group_name);
-        $this->initPaths();
+        parent::__construct();
 	}
 
     public function deleteGroup(): Delete
     {
+        $this->deleteGroupPermissions();
+        $this->deletePolicies();
         foreach($this->getGroupPaths($this->group_name) as $dir){
             File::cleanDirectory($dir->path);
             File::deleteDirectory($dir->path);
@@ -41,6 +48,7 @@ class Delete
         foreach($this->getFormatedFiles() as $file){
             File::delete($file);
         }
+        $this->deletePermissions();
         return $this;
     }
 
@@ -71,6 +79,7 @@ class Delete
         }
         $files[] = str_replace("/", DIRECTORY_SEPARATOR, "{$this->controller_path}/{$this->group_name}/{$this->getItemUpperName()}Controller.php");
         $files[] = str_replace("/", DIRECTORY_SEPARATOR, "{$this->repository_path}/{$this->group_name}/{$this->getItemUpperName()}Repository.php");
+        $files[] = str_replace("/", DIRECTORY_SEPARATOR, "{$this->policy_path}/{$this->getModelNameSpace()}/{$this->getItemUpperName()}Policy.php");
         $files[] = str_replace("/", DIRECTORY_SEPARATOR, "{$this->navbar_path}/".strtolower($this->group_name)."/{$this->getItemLowerName()}.blade.php");
         $files[] = str_replace("/", DIRECTORY_SEPARATOR, "{$this->route_path}/".strtolower($this->group_name)."/{$this->getItemLowerName()}.php");
         return $files;
@@ -94,6 +103,37 @@ class Delete
         return $files;
     }
 
+    private function deletePermissions(): void
+    {
+        foreach($this->getPermissions() as $name){
+            (new PermissionRepository)->query()->whereName("$name {$this->model->getTable()}")->delete();      
+        }
+    }
+
+    private function deleteGroupPermissions(): void
+    {
+        foreach($this->getGroupTables($this->group_name) as $table){
+            foreach($this->getPermissions() as $name){
+                (new PermissionRepository)->query()->whereName("$name {$table}")->delete();      
+            }
+        }
+    }
+
+    private function deletePolicies(): void
+    {
+        foreach($this->getModelNames() as $model){
+            $temp = explode('\\', $model);
+            $temp = end($temp);
+            if(in_array($temp, $this->getGroupModels($this->group_name))){
+                $policy_file = "App\Policies\\{$model}Policy.php";
+                if(File::exists($policy_file)){
+                   File::delete($policy_file); 
+                }
+            }
+        }
+    }
+
+    /*
     public function getItemUpperName()
     {
         return Str::ucfirst($this->item_name);
@@ -103,5 +143,5 @@ class Delete
     {
         return Str::snake(Str::plural($this->getItemUpperName($this->item_name)), '-');
     }
-
+    */
 }
