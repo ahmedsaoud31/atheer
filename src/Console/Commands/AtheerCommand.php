@@ -29,7 +29,8 @@ class AtheerCommand extends Command
         
         $this->question('Please be patient while we copy all Atheer files to your project');
         $this->call('vendor:publish', [
-            '--provider' => 'Atheer\AtheerServiceProvider'
+            '--provider' => 'Atheer\AtheerServiceProvider',
+            '--provider' => 'Spatie\Permission\PermissionServiceProvider',
         ]);
         $this->question('Go To:');
         $this->info(url(config('atheer.dashboard_name') ?? 'atheer'));
