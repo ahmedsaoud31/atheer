@@ -2,6 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Mail\Auth\ForgotPassword;
+use Mail;
+
 use App\Models\User as MainModel;
 
 class UserRepository
@@ -28,7 +31,12 @@ class UserRepository
     
     public function byId($id)
     {
-        return $this->query()->whereId($id)->first();
+        return $this->query()->whereId($id)->firstOrFail();
+    }
+
+    public function byEmail($email)
+    {
+        return $this->query()->whereEmail($email)->firstOrFail();
     }
     
     public function first($id)
@@ -43,6 +51,13 @@ class UserRepository
 
     public function deleteById($id)
     {
-        return $record = $this->byId($id)?$record->delete():false;
+        return $this->byId($id)?$record->delete():false;
+    }
+
+    public function sendRestPasswordEmail($user): void
+    {
+        Mail::to($user)
+            ->locale(app()->getLocale())
+            ->queue(new ForgotPassword($user));
     }
 }

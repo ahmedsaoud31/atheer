@@ -26,12 +26,35 @@ class AtheerServiceProvider extends ServiceProvider
         Blade::componentNamespace('App\\Atheer\\View\\Components', 'atheer-components');
 
         $this->publishes([
-            /*__DIR__.'/../config/atheer.php' => config_path('atheer.php'),
-            __DIR__.'/../app/Http/Controllers/AtheerController.php' => app_path('Http/Controllers/AtheerController.php'),
+
+            // Publish atheer config
+            __DIR__.'/../config/atheer.php' => config_path('atheer.php'),
+
+            // Publish atheer routes
+            __DIR__.'/../routes/atheer.php' => app_path('routes/atheer.php'),
+            __DIR__.'/../routes/atheer' => app_path('routes/atheer'),
+
+            // Publish atheer Controllers
+            __DIR__.'/../app/Http/Controllers/Atheer' => app_path('Http/Controllers/Atheer'),
+
+            // Publish atheer Requests
+            __DIR__.'/../app/Http/Requests/Atheer' => app_path('Http/Requests/Atheer'),
+
+            // Publish atheer Mails
+            __DIR__.'/../app/Mail' => app_path('Mail'),
+
+            // Publish atheer Policies
+            __DIR__.'/../app/Policies' => app_path('Policies'),
+
+            // Publish atheer Repositories
+            __DIR__.'/../app/Repositories/UserRepository.php' => app_path('Repositories/UserRepository.php'),
+            __DIR__.'/../app/Repositories/Atheer' => app_path('Repositories/Atheer'),
+
             __DIR__.'/../resources/views/vendor/atheer' => resource_path('views/vendor/atheer'),
             __DIR__.'/../lang' => base_path('lang'),
-            __DIR__.'/../public/themes/tabler' => public_path('/themes/tabler'),
-            __DIR__.'/../routes' => base_path('/routes'),*/
+            __DIR__.'/../public/atheer_public' => public_path('/atheer_public'),
+            __DIR__.'/../routes' => base_path('/routes'),
+            __DIR__.'/../database' => base_path('database/seeders'),
         ]);
         if ($this->app->runningInConsole()) {
             $this->commands([
@@ -44,13 +67,9 @@ class AtheerServiceProvider extends ServiceProvider
         $this->loadRoutes();
         $this->cacheSettings();
 
-        // Bind breadcrumbs package
-        /*$this->app->register(
-            'DaveJamesMiller\Breadcrumbs\ServiceProvider'
-        );*/
-
         $loader = AliasLoader::getInstance();
         $loader->alias('Atheer', 'Atheer\Facades\Atheer');
+        $loader->alias('Ath', 'Atheer\Facades\Ath');
 
         Paginator::defaultView('atheer::pagination.default');
         Paginator::defaultSimpleView('atheer::pagination.simple-default');
@@ -68,12 +87,6 @@ class AtheerServiceProvider extends ServiceProvider
 
     private function cacheSettings()
     {
-        /*if($layout = Cache::get('atheer_layout')){
-            if(in_array($layout, config('atheer.layouts'))){
-                Config::set('atheer.layout', $layout);
-            }
-        }*/
-
         if($locale = Cache::get('locale')){
             if(in_array($locale, Atheer::languageCodes())){
                 Config::set('app.locale', $locale);

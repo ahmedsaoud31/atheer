@@ -8,7 +8,8 @@
   </div>
   <div class="page-body">
     <div class="container-xl">
-
+      <!-- Flash message here -->
+      @include("atheer::support.templates.widgets.session-alert")
     </div>
   </div>
 @endsection

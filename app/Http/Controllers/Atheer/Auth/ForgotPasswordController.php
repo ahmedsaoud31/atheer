@@ -4,14 +4,34 @@ namespace App\Http\Controllers\Atheer\Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
 
 use App\Http\Requests\Atheer\Auth\ForgotPasswordRequest;
+use App\Http\Requests\Atheer\Auth\ResetPasswordRequest;
 use App\Repositories\UserRepository;
 
 class ForgotPasswordController extends Controller
 {
+    protected $data = [];
+    protected $model;
+
+    public function __construct()
+    {
+        $this->view = 'atheer::groups.auth.users';
+        $this->route = 'atheer.auth.users';
+        $this->repository = new UserRepository;
+        $this->model = $this->repository->model();
+        $this->data['model'] = $this->model;
+
+        $toBlade =  (object)[];
+        $toBlade->view = $this->view;
+        $toBlade->route = $this->route;
+        $toBlade->group = 'auth';
+        $toBlade->item = 'users';
+        $toBlade->name = 'user';
+        $this->data['atheer'] = $toBlade;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -33,7 +53,7 @@ class ForgotPasswordController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -44,15 +64,10 @@ class ForgotPasswordController extends Controller
      */
     public function store(ForgotPasswordRequest $request)
     {
-        $repo = (new UserRepository);
-        $repo->forgotPassword($request->email);
-        if($errorMessage = $repo->forgotPassword($email) !== true){
-            $this->addPublicError($errorMessage);
-            return Redirect::route('atheer.login')->withErrors($this->validator)->withInput();
-        }
-        if (auth()->attempt($credentials, $request->remember ? true : false)) {
-            return redirect('atheer.index');
-        }
+        $user = $this->repository->byEmail($request->email);
+        $this->repository->sendRestPasswordEmail($user);
+        request()->session()->flash('alert-success', __("Reset email send to your email, Please check your email"));
+        return redirect()->route("atheer.forgot-password.index");
     }
 
     /**
@@ -63,7 +78,12 @@ class ForgotPasswordController extends Controller
      */
     public function show($id)
     {
-      //
+        $user = $this->repository->byId($id);
+        if(!request()->hasValidSignature()){
+            request()->session()->flash('alert-danger', __("Signature expired, Please resend it again"));
+            return redirect()->route("atheer.forgot-password.index");
+        }
+        return view("atheer::groups.auth.reset-password", $this->data);
     }
 
     /**
@@ -84,9 +104,14 @@ class ForgotPasswordController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ResetPasswordRequest $request, $id)
     {
-        //
+        $this->model = $this->repository->firstOrFail($id);
+        // $this->authorize('update', $this->model);
+        $this->repository->update($this->model, $request->validated());
+        auth()->login($this->model);
+        request()->session()->flash('alert-success', __("Password updated successfully"));
+        return redirect()->route('atheer.index'); 
     }
 
     /**
@@ -98,13 +123,5 @@ class ForgotPasswordController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function logout()
-    {
-        if(auth()->user()){
-            auth()->logout(auth()->user());
-        }
-        return redirect('atheer.index');
     }
 }

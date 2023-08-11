@@ -11,7 +11,7 @@
 	"require": {
 		"php": ">=7.0",
 		"laravel/framework": ">=10.0",
-		"doctrine/dbal": ">=3.6"
+		"spatie/laravel-permission": ">=5.10.2"
 	},
 	"authors": [
 		{
@@ -25,7 +25,8 @@
 				"Atheer\\AtheerServiceProvider"
 			],
 			"aliases": {
-				"Atheer": "Atheer\\Facades\\Atheer"
+				"Atheer": "Atheer\\Facades\\Atheer",
+				"Ath": "Atheer\\Facades\\Ath"
 			}
 		}
 	},

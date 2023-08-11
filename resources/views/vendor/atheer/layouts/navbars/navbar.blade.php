@@ -32,3 +32,6 @@
     </div>
   </div>
 </li>
+
+@include('atheer::layouts.navbars.profile-menu')
+

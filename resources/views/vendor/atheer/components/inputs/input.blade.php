@@ -6,5 +6,5 @@
 			placeholder="{{ $placeholder }}"
 			value="{{ $value }}"
 	>
-	<div class="invalid-feedback" data-name="{{ $name }}">{{ $errors->has($name) ? $errors->first($name) : '' }}</div>
+	<div class="invalid-feedback {{ $errors->has($name)?'d-block':'' }}" data-name="{{ $name }}">{{ $errors->has($name) ? $errors->first($name) : '' }}</div>
 </div>

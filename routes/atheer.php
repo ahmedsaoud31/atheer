@@ -17,7 +17,6 @@ use Atheer\Facades\Atheer;
 |
 */
 
-Route::resource('/forgot-password', ForgotPasswordController::class);
 Route::get('/change-layout/{layout}', function ($layout) {
     if(in_array($layout, config('atheer.layouts'))){
       Cache::forever('atheer_layout', $layout);
@@ -39,10 +38,11 @@ Route::get('/test', function () {
 $url_name = config('atheer.dashboard_name');
 Route::name('atheer.')->middleware(['web'])->prefix($url_name)->group(function () {
 
-
   Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
   Route::resource('/login', LoginController::class, ['names' => ['index' => 'login']]);
   Route::resource('/register', RegisterController::class, ['names' => ['index' => 'register']]);
+  //Route::get('/forgot-password/reset', ForgotPasswordController::class)->name('reset-password');
+  Route::resource('/forgot-password', ForgotPasswordController::class);
 
   Route::middleware(['atheer-auth'])->group(function () {
     Route::resource('/', AtheerController::class);

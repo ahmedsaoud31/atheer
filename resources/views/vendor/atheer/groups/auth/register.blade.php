@@ -6,6 +6,8 @@
     <div class="text-center mb-4">
       <a href="." class="navbar-brand navbar-brand-autodark"><img src="{{ Atheer::publicUrl() }}/static/logo-orange.svg" height="150" alt=""></a>
     </div>
+    <!-- Flash message here -->
+    @include("atheer::support.templates.widgets.session-alert")
     <form class="card card-md" action="{{ route('atheer.register.store') }}" method="post">
       @csrf
       <div class="card-body">
