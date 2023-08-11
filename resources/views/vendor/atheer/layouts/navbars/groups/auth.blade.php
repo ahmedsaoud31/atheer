@@ -1,6 +1,6 @@
 @php($active = (request()->segment(2) == $group_name))
 <li class="nav-item dropdown {{ $active ? 'active' : '' }}">
-  <a class="nav-link dropdown-toggle {{ $active ? 'show' : '' }}" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="{{ $active ? 'true' : 'false' }}" >
+  <a class="nav-link dropdown-toggle {{ $active ? 'show' : '' }}" href="#" data-bs-toggle="dropdown" data-bs-auto-close="{{ in_array($layout, config('atheer.horizontal_layouts'))?'outside':'false' }}" role="button" aria-expanded="{{ $active ? 'true' : 'false' }}" >
     <span class="nav-link-icon d-md-none d-lg-inline-block">
     @include("atheer::tabler.icons.svg.star")
     </span>
