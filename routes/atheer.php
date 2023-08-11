@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Atheer\AtheerController;
+use App\Http\Controllers\Atheer\MainController;
 use App\Http\Controllers\Atheer\Auth\LoginController;
 use App\Http\Controllers\Atheer\Auth\RegisterController;
 use App\Http\Controllers\Atheer\Auth\ForgotPasswordController;
@@ -45,7 +45,7 @@ Route::name('atheer.')->middleware(['web'])->prefix($url_name)->group(function (
   Route::resource('/forgot-password', ForgotPasswordController::class);
 
   Route::middleware(['atheer-auth'])->group(function () {
-    Route::resource('/', AtheerController::class);
+    Route::resource('/', MainController::class);
 
     foreach(Atheer::routeGroups() as $group_name){
       Route::name("{$group_name}.")->prefix($group_name)

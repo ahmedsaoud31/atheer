@@ -30,6 +30,9 @@ class AtheerServiceProvider extends ServiceProvider
             // Publish atheer config
             __DIR__.'/../config/atheer.php' => config_path('atheer.php'),
 
+            // Publish atheer Files
+            __DIR__.'/../app/Atheer' => app_path('Atheer'),
+
             // Publish atheer Controllers
             __DIR__.'/../app/Http/Controllers/Atheer' => app_path('Http/Controllers/Atheer'),
 
@@ -56,8 +59,8 @@ class AtheerServiceProvider extends ServiceProvider
             __DIR__.'/../public/atheer_public' => public_path('/atheer_public'),
 
             // Publish atheer routes
-            __DIR__.'/../routes' => base_path('/routes'),
-
+            __DIR__.'/../routes' => base_path('routes'),
+            
             // Publish atheer Seeders
             __DIR__.'/../database/DatabaseSeeder.php' => base_path('database/DatabaseSeeder.php'),
             __DIR__.'/../database' => base_path('database/seeders'),
@@ -103,7 +106,7 @@ class AtheerServiceProvider extends ServiceProvider
     private function loadRoutes()
     {
         if(!file_exists(base_path('/routes/atheer.php'))){
-            //copy(__DIR__.'/../routes/atheer.php', base_path('/routes/atheer.php'));
+            copy(__DIR__.'/../routes/atheer.php', base_path('/routes/atheer.php'));
         }
         $this->loadRoutesFrom(__DIR__.'/../routes/atheer.php');
     }

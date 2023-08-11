@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Atheer\{{ groupUpperName }};
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Atheer\AtheerController;
 use Illuminate\Support\Str;
 use App\Repositories\Atheer\{{ groupUpperName }}\{{ itemUpperName }}Repository;
 
 use App\Http\Requests\Atheer\{{ groupUpperName }}\{{ itemUpperName }}\StoreRequest;
 use App\Http\Requests\Atheer\{{ groupUpperName }}\{{ itemUpperName }}\UpdateRequest;
 
-class {{ itemUpperName }}Controller extends Controller
+class {{ itemUpperName }}Controller extends AtheerController
 {
     protected $data = [];
     protected $view;

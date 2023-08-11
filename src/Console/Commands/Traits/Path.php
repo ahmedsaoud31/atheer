@@ -18,10 +18,10 @@ trait Path
     {
         if(config('atheer.dev')){
             $this->path = base_path()."/vendor/ahmedsaoud31/atheer";
-            $this->stubs_path = "{$this->path}/src/Console/Commands/Stubs";
+            $this->stubs_path = "{$this->path}/app/Atheer/Stubs";
         }else{
             $this->path = base_path();
-            $this->stubs_path = "{$this->path}/Atheer/Console/Commands/Stubs";
+            $this->stubs_path = "{$this->path}/app/Atheer/Stubs";
         }
         $this->controller_path = base_path()."/app/Http/Controllers/Atheer";
         $this->request_path = base_path()."/app/Http/Requests/Atheer";
