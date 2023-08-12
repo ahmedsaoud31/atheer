@@ -5,10 +5,22 @@
 
 ## Installation
 
+#### Create fresh laravel project
+```jsx
+composer create-project laravel/laravel project_name
+```
+
+```jsx
+cd project_name
+```
+
+#### Install Atheer
 ```jsx
 composer require ahmedsaoud31/atheer=dev-main
 ```
-#### Then run artisan command:
+##### Set databse config
+
+#### Then run atheer artisan install command:
 
 ```jsx
 php artisan atheer:install
