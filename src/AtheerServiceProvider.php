@@ -10,6 +10,7 @@ use Illuminate\Pagination\Paginator;
 use Atheer\Console\Commands\AtheerCommand;
 use Atheer\Console\Commands\MakeCommand;
 use Atheer\Console\Commands\DeleteCommand;
+use Atheer\Console\Commands\FreshCommand;
 use Atheer\Facades\Atheer;
 use Cache;
 
@@ -69,6 +70,7 @@ class AtheerServiceProvider extends ServiceProvider
                 AtheerCommand::class,
                 MakeCommand::class,
                 DeleteCommand::class,
+                FreshCommand::class,
             ]);
         }
         $this->loadViewsFrom(__DIR__.'/../resources/views/vendor/atheer', 'atheer');
