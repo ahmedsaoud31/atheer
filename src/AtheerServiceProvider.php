@@ -105,9 +105,9 @@ class AtheerServiceProvider extends ServiceProvider
 
     private function loadRoutes()
     {
-        /*if(!file_exists(base_path('/routes/atheer.php'))){
+        if(!file_exists(base_path('/routes/atheer.php'))){
             copy(__DIR__.'/../routes/atheer.php', base_path('/routes/atheer.php'));
-        }*/
+        }
         $this->loadRoutesFrom(Atheer::getBaseRoute()."/atheer.php");
     }
 }
