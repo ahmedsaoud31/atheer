@@ -62,8 +62,7 @@ class AtheerServiceProvider extends ServiceProvider
             __DIR__.'/../routes' => base_path('routes'),
             
             // Publish atheer Seeders
-            __DIR__.'/../database/DatabaseSeeder.php' => base_path('database/DatabaseSeeder.php'),
-            __DIR__.'/../database' => base_path('database/seeders'),
+            __DIR__.'/../database/seeders' => base_path('database/seeders'),
         ]);
         if ($this->app->runningInConsole()) {
             $this->commands([
