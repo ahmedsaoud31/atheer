@@ -6,21 +6,18 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
+use Atheer\Console\Commands\Traits\Path;
 use Atheer\Console\Commands\Core\Make;
 
 use Atheer\Core\Language;
 
 class Atheer
 {   
-    protected string $path = '';
-
+    Use Path;
+    
     public function __construct()
     {
-        if(config('atheer.dev')){
-            $this->path = base_path()."/vendor/ahmedsaoud31/atheer";
-        }else{
-            $this->path = base_path();
-        }
+        $this->initPaths();
     }
 
     public function optionsFormat(array | object $data, string | callable $value = 'id', string | callable $text = 'name'): array

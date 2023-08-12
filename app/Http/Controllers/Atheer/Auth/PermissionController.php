@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Atheer\Auth;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Atheer\AtheerController;
 use App\Repositories\Atheer\Auth\PermissionRepository;
 
 use App\Http\Requests\Atheer\Auth\Permission\StoreRequest;
 use App\Http\Requests\Atheer\Auth\Permission\UpdateRequest;
 use App\Http\Requests\Atheer\Auth\Permission\DestroyRequest;
 
-class PermissionController extends Controller
+class PermissionController extends AtheerController
 {
     protected $data = [];
     protected $model;

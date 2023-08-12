@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Atheer\Auth;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Atheer\AtheerController;
 use App\Repositories\UserRepository;
 use App\Repositories\Atheer\Auth\RoleRepository;
 
@@ -13,7 +13,7 @@ use App\Http\Requests\Atheer\Auth\User\UpdateRoleRequest;
 
 use Atheer;
 
-class UserController extends Controller
+class UserController extends AtheerController
 {
     protected $data = [];
     protected $model;

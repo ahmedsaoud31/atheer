@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Atheer\Auth;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Atheer\AtheerController;
 use Illuminate\Support\Facades\Redirect;
 
 use App\Http\Requests\Atheer\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Atheer\Auth\ResetPasswordRequest;
 use App\Repositories\UserRepository;
 
-class ForgotPasswordController extends Controller
+class ForgotPasswordController extends AtheerController
 {
     protected $data = [];
     protected $model;

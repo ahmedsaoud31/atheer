@@ -8,7 +8,7 @@ use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Atheer;
 
-class PermissionSeeder extends Seeder
+class PermissionsSeeder extends Seeder
 {
     /**
      * Run the database seeds.

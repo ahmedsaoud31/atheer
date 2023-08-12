@@ -8,7 +8,7 @@ use Spatie\Permission\Models\Role;
 
 use App\Models\User;
 
-class UserSeeder extends Seeder
+class UsersSeeder extends Seeder
 {
     /**
      * Run the database seeds.

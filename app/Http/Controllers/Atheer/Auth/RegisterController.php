@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Atheer\Auth;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Atheer\AtheerController;
 use Illuminate\Support\Facades\Validator;
 
 use App\Http\Requests\Atheer\Auth\RegisterRequest;
 use App\Repositories\UserRepository;
 
-class RegisterController extends Controller
+class RegisterController extends AtheerController
 {
     protected $data = [];
     protected $path;

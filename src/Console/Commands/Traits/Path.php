@@ -27,8 +27,14 @@ trait Path
         $this->request_path = base_path()."/app/Http/Requests/Atheer";
         $this->repository_path = base_path()."/app/Repositories/Atheer";
         $this->policy_path = base_path()."/app/Policies";
+        $this->base_route = "{$this->path}/routes";
         $this->route_path = "{$this->path}/routes/atheer";
         $this->navbar_path = "{$this->path}/resources/views/vendor/atheer/layouts/navbars/groups";
         $this->view_path = "{$this->path}/resources/views/vendor/atheer/groups";
+    }
+
+    public function getBaseRoute()
+    {
+        return $this->base_route;
     }
 }

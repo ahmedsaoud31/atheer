@@ -1,16 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Atheer\Auth;
+namespace App\Http\Controllers\Atheer;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Atheer\AtheerController;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Redirect;
 
-use App\Http\Requests\Atheer\Auth\LoginRequest;
-use App\Repositories\UserRepository;
-
-class LoginController extends AtheerController
+class MainController extends AtheerController
 {
     /**
      * Display a listing of the resource.
@@ -19,11 +14,17 @@ class LoginController extends AtheerController
      */
     public function index()
     {
-        if(auth()->user()){
-            return redirect('atheer.index');
-        }else{
-            return view("atheer::groups.auth.login");
-        }
+      return view("atheer::pages.index");
+    }
+
+    public function page()
+    {
+      return view("atheer::pages." . request()->page , ['layout' => config('atheer.layout')]);
+    }
+
+    public function docs()
+    {
+      return view("atheer::docs." . request()->page , ['layout' => request()->layout]);
     }
 
     /**
@@ -42,16 +43,9 @@ class LoginController extends AtheerController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(LoginRequest $request)
+    public function store(Request $request)
     {
-        $credentials = $request->only('email', 'password');
- 
-        if (auth()->attempt($credentials, $request->remember ? true : false)) {
-            return redirect()->route('atheer.index');
-        }else{
-            $this->addPublicError(__('Login faild'));
-            return Redirect::route('atheer.login')->withErrors($this->validator)->withInput();
-        }
+        //
     }
 
     /**
@@ -97,13 +91,5 @@ class LoginController extends AtheerController
     public function destroy($id)
     {
         //
-    }
-
-    public function logout()
-    {
-        if(auth()->user()){
-            auth()->logout(auth()->user());
-        }
-        return redirect()->route('atheer.login');
     }
 }
