@@ -43,7 +43,7 @@ class AtheerServiceProvider extends ServiceProvider
             __DIR__.'/../app/Mail' => app_path('Mail'),
 
             // Publish atheer Policies
-            // __DIR__.'/../app/Policies' => app_path('Policies'),
+            __DIR__.'/../app/Policies' => app_path('Policies'),
 
             // Publish atheer Repositories
             __DIR__.'/../app/Repositories/UserRepository.php' => app_path('Repositories/UserRepository.php'),
