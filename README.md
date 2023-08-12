@@ -18,6 +18,8 @@ cd project_name
 ```jsx
 composer require ahmedsaoud31/atheer=dev-main
 ```
+##### Set databse config
+
 #### Then run atheer artisan install command:
 
 ```jsx
