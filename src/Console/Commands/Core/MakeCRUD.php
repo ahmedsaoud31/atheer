@@ -145,7 +145,9 @@ class MakeCRUD extends Make
                    ->replace('{{ itemLowerName }}', $this->getItemLowerName())
                    ->replace('{{ itemUpperName }}', $this->getItemUpperName());
         $dir = "{$this->policy_path}/{$this->getModelNameSpace()}";
-        Storage::makeDirectory($dir);
+        if(!File::isDirectory($dir)){
+            File::makeDirectory($dir, 0755, true, true);
+        }
         $file = "{$dir}/{$this->name}Policy.php";
         File::put($file, $stub);
         $this->setInfo(prefix: 'Policy', alert: 'success', line: "{$file} created success.");
