@@ -83,15 +83,15 @@ class DeleteCommand extends Command
                 }
                 while(true){
                     $delete = new Delete(group_name: $group_name);
-                    $items = $delete->getItemNames();
-                    if(empty($items)){
-                        $this->error("No items found.");
+                    $models = $delete->getModelNames();
+                    if(empty($models)){
+                        $this->error("No models found.");
                         break;
                     }
                     $item_name = $this->choice(
                         "Which CRUD you want to delete in ({$group_name}) group?",
-                        $items,
-                        $items[0] ?? ''
+                        $models,
+                        $models[0] ?? ''
                     );
                     $delete = new Delete(group_name: $group_name, item_name: $item_name);
                     $item_name = $delete->getItemUpperName();
