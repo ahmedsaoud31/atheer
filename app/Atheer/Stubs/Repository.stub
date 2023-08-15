@@ -23,7 +23,7 @@ class {{ itemUpperName }}Repository
 
     public function all()
     {
-        return $this->query()->all();
+        return $this->model()->all();
     }
     
     public function create($inputs)
