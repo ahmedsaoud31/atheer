@@ -45,6 +45,10 @@ class DeleteCommand extends Command
             case "Group":
                 while(true){
                     $groups = (new make)->getGroupNames();
+                    if(empty($groups)){
+                        $this->error('No groups found.');
+                        break;
+                    }
                     $group_name = $this->choice(
                         'Which group you want to delete?',
                         $groups,
@@ -72,6 +76,10 @@ class DeleteCommand extends Command
                 break;
             case "CRUD":
                 $groups = (new make)->getGroupNames();
+                if(empty($groups)){
+                    $this->error('No groups found.');
+                    break;
+                }
                 $group_name = $this->choice(
                     'Which group contain your CRUD?',
                     $groups,
@@ -83,7 +91,7 @@ class DeleteCommand extends Command
                 }
                 while(true){
                     $delete = new Delete(group_name: $group_name);
-                    $models = $delete->getModelNames();
+                    $models = $delete->getGroupModels();
                     if(empty($models)){
                         $this->error("No models found.");
                         break;

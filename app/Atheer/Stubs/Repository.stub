@@ -21,6 +21,11 @@ class {{ itemUpperName }}Repository
         return $this->model()->query();
     }
 
+    public function all()
+    {
+        return $this->query()->all();
+    }
+    
     public function create($inputs)
     {
         if (Schema::hasColumn($this->model()->getTable(), 'created_at'))
@@ -45,7 +50,12 @@ class {{ itemUpperName }}Repository
 
     public function byId($id)
     {
-        return $this->query()->whereId($id)->first();
+        return $this->query()->whereId($id)->firstOrFail();
+    }
+    
+    public function paginate($pages)
+    {
+        return $this->query()->latest()->paginate($pages);
     }
     
     public function first($id)

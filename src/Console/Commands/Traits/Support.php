@@ -102,16 +102,16 @@ trait Support
             $temp = explode('\\', $item->getRealPath());
             $temp = end($temp);
             $temp = Str::replaceLast('Repository.php', '', $temp);
-            $names[] = (string) Str::of($temp)->lower()->plural()->toHtmlString();
+            $names[] = (string) Str::of($temp)->snake()->lower()->plural()->toHtmlString();
         }
         return $names;
     }
 
-    public function getGroupModels($group_name): array
+    public function getGroupModels(): array
     {
         $names = [];
-        foreach($this->getGroupTables($group_name) as $name){
-            $names[] = (string) Str::of($name)->ucfirst()->singular()->toHtmlString();
+        foreach($this->getGroupTables($this->group_name) as $name){
+            $names[] = (string) Str::of($name)->camel()->ucfirst()->singular()->toHtmlString();
         }
         return $names;
     }
