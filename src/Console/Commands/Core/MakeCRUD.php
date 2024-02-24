@@ -21,7 +21,7 @@ class MakeCRUD extends Make
         $this->model_path = $name;
         $name = explode('\\', $name);
         $this->name = Str::ucfirst(end($name));
-        $this->group_name = Str::ucfirst($group_name);
+        $this->group_name = $this->toCamelFirst($group_name);
         parent::__construct();
 	}
 
@@ -51,9 +51,9 @@ class MakeCRUD extends Make
         $dirs = [
             "{$this->controller_path}/{$this->group_name}",
             "{$this->request_path}/{$this->group_name}",
-            "{$this->route_path}/".strtolower($this->group_name),
-            "{$this->navbar_path}/".strtolower($this->group_name),
-            "{$this->view_path}/".strtolower($this->group_name),
+            "{$this->route_path}/".$this->toSnakeDash($this->group_name),
+            "{$this->navbar_path}/".$this->toSnakeDash($this->group_name),
+            "{$this->view_path}/".$this->toSnakeDash($this->group_name),
         ];
         foreach($dirs as $dir){
             if(!File::isDirectory($dir)){
@@ -331,10 +331,10 @@ class MakeCRUD extends Make
                     }
                 }
             }
-            if(!$temp->db_type){
+            if(!isset($temp->db_type) || !$temp->db_type){
                 $temp->db_type = 'varchar';
             }
-            if(!$temp->type){
+            if(!isset($temp->type) || !$temp->type){
                 $temp->type = 'text';
             }
             if(Str::endsWith($temp->name, '_id')){
@@ -362,7 +362,7 @@ class MakeCRUD extends Make
                             'smallint', 'int', 'bigint', 'decimal', 'numeric', 'float', 'real', 'decimal', 'dec',
                             'char', 'varchar','nchar', 'nvarchar'
                             ],
-                'textarea' => ['text', 'ntext', 'blob', 'mediumtext', 'mediumblob', 'longtext', 'longblob'],
+                'textarea' => ['json', 'text', 'ntext', 'blob', 'mediumtext', 'mediumblob', 'longtext', 'longblob'],
                 'select' => ['enum', 'set'],
                 'date' => ['date', 'datetime', 'timestamp', 'year', 'time']
             ];

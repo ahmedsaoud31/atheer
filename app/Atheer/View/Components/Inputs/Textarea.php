@@ -14,6 +14,7 @@ class Textarea extends Component
         public $model = null,
         public $label = '',
         public $name = '',
+        public $id = '',
         public $placeholder = '',
         public $value = '',
     ) {

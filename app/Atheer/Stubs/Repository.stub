@@ -32,7 +32,10 @@ class {{ itemUpperName }}Repository
         {
             $inputs = Arr::add($inputs, 'created_at', date('Y-m-d h:i:s'));
         }
-        return $this->model()->insertGetId($inputs);
+        $id = $this->model()->insertGetId($inputs);
+        $record = $this->byId($id);
+        $record->fillable(array_merge($record->getFillable(), $this->fillable))->fill($inputs)->save();
+        return $id;
     }
 
     public function update($record, $inputs)

@@ -132,6 +132,25 @@ class Atheer
         return $names;
     }
 
+    public function getSlugTables(): array
+    {
+        $names = [];
+        foreach($this->getTables() as $table){
+            $names[] = Str::of($table)->slug('-')->toHtmlString();
+        }
+        return $names;
+    }
+
+    public function groupHasVisableItems(string $group_name): bool
+    {
+        foreach($this->navbarItems($group_name) as $name){
+            if(auth()->user()->can("view {$name}") || auth()->user()->hasRole('Super Admin')){
+                return true;
+            }
+        }
+        return false;;
+    }
+
     public function getPermissions(): array
     {
         return (new make)->getPermissions();
@@ -140,7 +159,7 @@ class Atheer
     public function isAtheerPermission($permission): bool
     {
         foreach($this->getPermissions() as $name){
-            foreach($this->getTables() as $table){
+            foreach($this->getSlugTables() as $table){
                 if($permission == "{$name} {$table}"){
                     return true;
                 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Atheer\{{ groupUpperName }};
 use Illuminate\Http\Request;
 use App\Http\Controllers\Atheer\AtheerController;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Route;
 use App\Repositories\Atheer\{{ groupUpperName }}\{{ itemUpperName }}Repository;
 
 use App\Http\Requests\Atheer\{{ groupUpperName }}\{{ itemUpperName }}\StoreRequest;
@@ -33,6 +34,7 @@ class {{ itemUpperName }}Controller extends AtheerController
         $toBlade->item = '{{ itemLowerName }}';
         $toBlade->name = '{{ itemSingularLowerName }}';
         $toBlade->title = __((string)Str::ucfirst($toBlade->item));
+        $toBlade->method = Route::getCurrentRoute()->getActionMethod();
         $this->data['atheer'] = $toBlade;
     }
 

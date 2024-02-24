@@ -21,7 +21,7 @@ class Delete extends Make
             $item_name = explode('\\', $item_name);
             $this->name = Str::ucfirst(end($item_name));
         }
-        $this->group_name = Str::ucfirst($group_name);
+        $this->group_name = $this->toCamelFirst($group_name);
         parent::__construct();
 	}
 
@@ -62,8 +62,8 @@ class Delete extends Make
                 }
             }
         }
-        $files[] = str_replace("/", DIRECTORY_SEPARATOR, "{$this->route_path}/".strtolower($this->group_name).".php");
-        $files[] = str_replace("/", DIRECTORY_SEPARATOR, "{$this->navbar_path}/".strtolower($this->group_name).".blade.php");
+        $files[] = str_replace("/", DIRECTORY_SEPARATOR, "{$this->route_path}/".$this->toSnakeDash($this->group_name).".php");
+        $files[] = str_replace("/", DIRECTORY_SEPARATOR, "{$this->navbar_path}/".$this->toSnakeDash($this->group_name).".blade.php");
         return $files;
     }
 
@@ -80,8 +80,8 @@ class Delete extends Make
         $files[] = str_replace("/", DIRECTORY_SEPARATOR, "{$this->controller_path}/{$this->group_name}/{$this->getItemUpperName()}Controller.php");
         $files[] = str_replace("/", DIRECTORY_SEPARATOR, "{$this->repository_path}/{$this->group_name}/{$this->getItemUpperName()}Repository.php");
         $files[] = str_replace("/", DIRECTORY_SEPARATOR, "{$this->policy_path}/{$this->getModelNameSpace()}/{$this->getItemUpperName()}Policy.php");
-        $files[] = str_replace("/", DIRECTORY_SEPARATOR, "{$this->navbar_path}/".strtolower($this->group_name)."/{$this->getItemLowerName()}.blade.php");
-        $files[] = str_replace("/", DIRECTORY_SEPARATOR, "{$this->route_path}/".strtolower($this->group_name)."/{$this->getItemLowerName()}.php");
+        $files[] = str_replace("/", DIRECTORY_SEPARATOR, "{$this->navbar_path}/".$this->toSnakeDash($this->group_name)."/{$this->getItemLowerName()}.blade.php");
+        $files[] = str_replace("/", DIRECTORY_SEPARATOR, "{$this->route_path}/".$this->toSnakeDash($this->group_name)."/{$this->getItemLowerName()}.php");
         return $files;
     }
 

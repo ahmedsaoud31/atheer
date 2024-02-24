@@ -12,7 +12,7 @@ class MakeGroup extends Make
 	
     public function __construct( public string $name)
 	{
-        $this->name = Str::ucfirst($name);
+        $this->name = $this->toCamelFirst($name);
         parent::__construct();
 	}
 
@@ -37,7 +37,7 @@ class MakeGroup extends Make
     private function makeRoute(): MakeGroup
     {
         $stub = File::get("{$this->stubs_path}/route-group.stub");
-        $dir = "{$this->route_path}/".strtolower($this->name);
+        $dir = "{$this->route_path}/".$this->toSnakeDash($this->name);
         $file = "{$dir}.php";
         File::put($file, $stub);
         $this->setInfo(prefix: 'Route', alert: 'success', line: "{$file} created success.");
@@ -47,7 +47,7 @@ class MakeGroup extends Make
     private function makeNavbar(): MakeGroup
     {
         $stub = File::get("{$this->stubs_path}/views/navbar-group.stub");
-        $dir = "{$this->navbar_path}/".strtolower($this->name);
+        $dir = "{$this->navbar_path}/".$this->toSnakeDash($this->name);
         $file = "{$dir}.blade.php";
         File::put($file, $stub);
         $this->setInfo(prefix: 'Navbar', alert: 'success', line: "{$file} created success.");

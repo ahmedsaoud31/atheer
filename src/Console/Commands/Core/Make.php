@@ -66,7 +66,7 @@ class Make
 
     public function getGroupLowerName()
     {
-        return Str::lower($this->group_name);
+        return $this->toSnakeDash($this->group_name);
     }
 
 }

@@ -3,7 +3,9 @@
 namespace Atheer\Console\Commands\Traits;
  
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Schema;
 
 use Atheer\Console\Commands\Traits\Path;
 
@@ -37,21 +39,32 @@ trait Support
             if(in_array($name, ['auth', 'settings'])){
                 continue;
             }
-            $names[] = $name;
+            $names[] = $this->toCamelFirst($name);
         }
         return $names;
     }
 
     public function getGroupPaths($group_name): array
     {
+        $group_name = Str::ucfirst($group_name);
         return [
             (object)['prefix' => 'Controller', 'path' => "{$this->controller_path}/{$group_name}"],
             (object)['prefix' => 'Request', 'path' => "{$this->request_path}/{$group_name}"],
             (object)['prefix' => 'Repository', 'path' => "{$this->repository_path}/{$group_name}"],
-            (object)['prefix' => 'Route', 'path' => "{$this->route_path}/".strtolower($group_name)],
-            (object)['prefix' => 'Navbar', 'path' => "{$this->navbar_path}/".strtolower($group_name)],
-            (object)['prefix' => 'View', 'path' => "{$this->view_path}/".strtolower($group_name)],
+            (object)['prefix' => 'Route', 'path' => "{$this->route_path}/". $this->toSnakeDash($group_name)],
+            (object)['prefix' => 'Navbar', 'path' => "{$this->navbar_path}/". $this->toSnakeDash($group_name)],
+            (object)['prefix' => 'View', 'path' => "{$this->view_path}/". $this->toSnakeDash($group_name)],
         ];
+    }
+
+    public function toSnakeDash($group_name)
+    {
+        return Str::of($group_name)->snake('-')->toHtmlString();
+    }
+
+    public function toCamelFirst($name)
+    {
+        return Str::of($name)->camel()->ucfirst()->toHtmlString();
     }
 
     public function getItemPaths($group_name, $item_upper_name, $item_lower_name): array
@@ -61,9 +74,9 @@ trait Support
             (object)['prefix' => 'Request', 'path' => "{$this->request_path}/{$group_name}/$item_upper_name"],
             (object)['prefix' => 'Repository', 'path' => "{$this->repository_path}/{$group_name}/$item_upper_name"],
             //(object)['prefix' => 'Policy', 'path' => "{$this->policy_path}/$item_upper_name"],
-            (object)['prefix' => 'Route', 'path' => "{$this->route_path}/".strtolower($group_name)."/{$item_lower_name}"],
-            (object)['prefix' => 'Navbar', 'path' => "{$this->navbar_path}/".strtolower($group_name)."/{$item_lower_name}"],
-            (object)['prefix' => 'View', 'path' => "{$this->view_path}/".strtolower($group_name)."/{$item_lower_name}"],
+            (object)['prefix' => 'Route', 'path' => "{$this->route_path}/".$this->toSnakeDash($group_name)."/{$item_lower_name}"],
+            (object)['prefix' => 'Navbar', 'path' => "{$this->navbar_path}/".$this->toSnakeDash($group_name)."/{$item_lower_name}"],
+            (object)['prefix' => 'View', 'path' => "{$this->view_path}/".$this->toSnakeDash($group_name)."/{$item_lower_name}"],
         ];
     }
 
@@ -96,13 +109,27 @@ trait Support
 
     public function getGroupTables($group_name): array
     {
-        $group_name = Str::ucfirst($group_name);
+        //$group_name = Str::ucfirst($group_name);
         $names = [];
-        foreach(File::allFiles(base_path()."/app/Repositories/Atheer/{$group_name}") as $item){
-            $temp = explode('\\', $item->getRealPath());
+        // foreach(File::allFiles(base_path()."/app/Repositories/Atheer/{$group_name}") as $item){
+        //     $temp = explode('\\', $item->getRealPath());
+        //     $temp = end($temp);
+        //     $temp = Str::replaceLast('Repository.php', '', $temp);
+        //     $names[] = (string) Str::of($temp)->snake()->lower()->plural()->toHtmlString();
+        // }
+        $group_name = $this->toCamelFirst($group_name);
+        Schema::disableForeignKeyConstraints();
+        $tables = \DB::select('SHOW TABLES');
+        $tables = array_map('current', $tables);
+        foreach(File::directories("{$this->view_path}/". $this->toSnakeDash($group_name)) as $dir){
+            $temp = str_replace('\\', '/', $dir);
+            $temp = explode('/', $temp);
             $temp = end($temp);
-            $temp = Str::replaceLast('Repository.php', '', $temp);
-            $names[] = (string) Str::of($temp)->snake()->lower()->plural()->toHtmlString();
+            $temp = (string) Str::of($temp)->slug('_')->lower()->plural()->toHtmlString();
+            if(in_array($temp, $tables)){
+                $names[] = $temp;
+            }
+            
         }
         return $names;
     }
@@ -130,7 +157,7 @@ trait Support
 
     public function getPermissions(): array
     {
-        return ['view', 'add', 'edit', 'delete'];
+        return ['view', 'create', 'update', 'delete'];
     }
 
     protected function setInfo($prefix = 'Default', $alert = 'default', $line = '')

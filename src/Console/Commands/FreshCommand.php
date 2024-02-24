@@ -36,8 +36,8 @@ class FreshCommand extends Command
             $this->question('Please be patient while we backup your data and re-migrate tables and seed data again to your database.');
             $this->backup();
             $this->call('migrate:fresh', []);
-            $this->seed();
-            // (new AtheerSeeder)->run();
+            //$this->seed();
+            (new AtheerSeeder)->run();
             $this->info('Fresh atheer done.');
         }
 	}
