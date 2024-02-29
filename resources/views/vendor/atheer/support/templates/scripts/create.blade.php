@@ -1,7 +1,7 @@
 @push('scripts')
 <script>
+  
   $(function() {
-
     fValidation().setPublicErrorHeader('{{ __("Please fix form validation") }}');
 
     $('#atheerCreate').on('click', '.create', function(){
@@ -26,6 +26,7 @@
             }else{
               $('#createModal form').html(data.body);
               $('#createModal').modal('toggle');
+              $("#createModal").trigger( "create_loaded", []);
             }
             _this.find('.spinner-border').removeClass('d-inline').addClass('d-none');
       });

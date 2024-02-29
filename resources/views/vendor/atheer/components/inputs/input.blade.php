@@ -1,6 +1,7 @@
 <div {{ $attributes }}>
 	<label class="form-label">{{ $label }}</label>
-	<input	type="{{ $type }}"
+	<input	id="{{ $id }}"
+			type="{{ $type }}"
 			name="{{ $name }}"
 			class="form-control {{ $errors->has($name)?'is-invalid':(old($name)?'is-valid':'') }}"
 			placeholder="{{ $placeholder }}"

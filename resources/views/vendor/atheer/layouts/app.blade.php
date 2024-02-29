@@ -17,7 +17,10 @@
         <link href="{{ Atheer::publicUrl() . '/themes/tabler/css/tabler-vendors.' }}{{  $dir_flag }}min.css" rel="stylesheet"/>
         <link href="{{ Atheer::publicUrl() . '/themes/tabler/css/demo.' }}{{  $dir_flag }}min.css" rel="stylesheet"/>
         <link href="{{ Atheer::publicUrl() . '/libs/Toastr/toastr.min.css' }}" rel="stylesheet"/>
+        <link href="{{ Atheer::publicUrl() . '/libs/simplemde/simplemde.min.css' }}" rel="stylesheet"/>
+
         @stack('css_libs_after')
+        <link href="{{ url('/') . '/dp/css/style.css' }}" rel="stylesheet"/>
 
         <!-- Inject css -->
         @stack('styles')
@@ -41,6 +44,9 @@
         <script src="{{ Atheer::publicUrl() . '/js/fValidation.js' }}"></script>
         <script src="{{ Atheer::publicUrl() . '/js/atheer.js' }}"></script>
         <script src="{{ Atheer::publicUrl() . '/libs/Toastr/toastr.min.js' }}"></script>
+        <script src="{{ Atheer::publicUrl() . '/libs/simplemde/simplemde.min.js' }}"></script>
+
+        @stack('js_after')
 
         <!-- Inject js -->
         @stack('scripts')

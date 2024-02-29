@@ -1,6 +1,7 @@
 <div {{ $attributes }}>
 	<label class="form-label">{{ $label }}</label>
 	<textarea 
+			id="{{ $id }}"
 			name="{{ $name }}"
 			class="form-control{{ $errors->has($name)?' is-invalid':(old($name)?' is-valid':'') }}"
 			placeholder="{{ $placeholder }}"

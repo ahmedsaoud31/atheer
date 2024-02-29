@@ -30,6 +30,7 @@
               $('#editModal form').html(data.body);
               $('#editModal .submit').attr('data-id', id);
               $('#editModal').modal('toggle');
+              $("#editModal").trigger( "edit_loaded", []);
             }
             _this.find('.spinner-border').removeClass('d-inline').addClass('d-none');
       });
@@ -51,6 +52,7 @@
             }
             _this.find('.spinner-border').removeClass('d-inline').addClass('d-none');
             fValidation('#editModal', xhr.responseJSON.errors).validate();
+            toastr.warning('{{ __('Validate input data') }}');
           }
           }).done(function(data, textStatus, xhr){
             if(xhr.status != 200){

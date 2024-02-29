@@ -1,6 +1,7 @@
 <div {{ $attributes }}>
 	<label class="form-label">{{ $label }}</label>
 	<select 
+			{{ $disabled ? 'disabled' : '' }}
 			name="{{ $name }}"
 			class="form-select {{ $errors->has($name)?'is-invalid':(old($name)?'is-valid':'') }}"
 			>

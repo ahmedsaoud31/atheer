@@ -98,11 +98,24 @@ class Atheer
     public function navbarItems($group_name)
     {
         $path = "{$this->path}/resources/views/vendor/atheer/layouts/navbars/groups/{$group_name}/*.*";
-        $out = [];
+        $array = [];
         foreach(glob($path) as $file) {
-            $file = basename($file);
-            $file = explode('.', $file)[0];
-            $out[] = $file;
+            $content = file_get_contents($file);
+            $temp = (object)[];
+            preg_match('/\<\!\-\-SORT(.*?)SORT\-\-\>/s', $content, $matches);
+            if(isset($matches[1]) && trim($matches[1]) > 0){
+               $temp->sort = (int) trim($matches[1]);
+            }else{
+                $temp->sort = 10000000;
+            }
+            $temp->name = basename($file);
+            $temp->name = explode('.', $temp->name)[0];
+            $array[] = $temp;
+        }
+        $array = collect($array)->sortBy('sort')->toArray();
+        $out = [];
+        foreach($array as $item){
+           $out[] =  $item->name;
         }
         return $out;
     }
