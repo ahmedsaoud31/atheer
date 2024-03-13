@@ -441,7 +441,7 @@ class MakeCRUD extends Make
                         $arr[] = '<td><label class="form-switch"><input class="form-check-input" type="checkbox" {{ $record->'. $item->name .'? "checked":"" }} disabled></label></td>'."\n\t";
                         break;
                     default:
-                        $arr[] = '<td>{{ Str::limit($record->'. $item->name . ', 30, "...") }}</td>'."\n\t";
+                        $arr[] = '<td>{{ Str::limit((string)$record->'. $item->name . ', 30, "...") }}</td>'."\n\t";
                         break;
                 }
             }
