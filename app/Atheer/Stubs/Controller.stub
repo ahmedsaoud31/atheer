@@ -16,6 +16,7 @@ use Atheer;
 class {{ itemUpperName }}Controller extends AtheerController
 {
     protected $data = [];
+    protected $repository;
     protected $view;
     protected $route;
     protected $model;
