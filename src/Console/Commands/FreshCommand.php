@@ -32,14 +32,14 @@ class FreshCommand extends Command
 	public function handle(): void
 	{
         if ($this->confirm("This command will backup your data before re-migrate tables, are you sure you want to process this action?")) {
-            
-            $this->question('Please be patient while we backup your data and re-migrate tables and seed data again to your database.');
+            $this->question('Please be patient while we backup your data.');
             $this->backup();
-            $this->call('migrate:fresh', []);
-            //$this->seed();
-            (new AtheerSeeder)->run();
-            $this->info('Fresh atheer done.');
         }
+        $this->question('Please be patient while we seed your data again to your database.');
+        $this->call('migrate:fresh', []);
+        //$this->seed();
+        (new AtheerSeeder)->run();
+        $this->info('Fresh atheer done.');
 	}
 
     private function backup()
