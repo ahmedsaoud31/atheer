@@ -109,18 +109,10 @@ trait Support
 
     public function getGroupTables($group_name): array
     {
-        //$group_name = Str::ucfirst($group_name);
         $names = [];
-        // foreach(File::allFiles(base_path()."/app/Repositories/Atheer/{$group_name}") as $item){
-        //     $temp = explode('\\', $item->getRealPath());
-        //     $temp = end($temp);
-        //     $temp = Str::replaceLast('Repository.php', '', $temp);
-        //     $names[] = (string) Str::of($temp)->snake()->lower()->plural()->toHtmlString();
-        // }
         $group_name = $this->toCamelFirst($group_name);
         Schema::disableForeignKeyConstraints();
         $tables = \DB::select('SHOW TABLES');
-        $tables = array_map('current', $tables);
         foreach(File::directories("{$this->view_path}/". $this->toSnakeDash($group_name)) as $dir){
             $temp = str_replace('\\', '/', $dir);
             $temp = explode('/', $temp);

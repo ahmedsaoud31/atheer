@@ -135,6 +135,11 @@ class Atheer
         return url('/atheer_public');
     }
 
+    public function Load(String $path): string
+    {
+        return url("/atheer_public/{$path}") . '?' . filemtime(public_path("/atheer_public/{$path}"));
+    }
+
     public function getTables(): array
     {
         $make = new make;

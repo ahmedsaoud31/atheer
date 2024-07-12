@@ -5,6 +5,7 @@ namespace Atheer\Console\Commands\Traits;
 trait Path
 {
     protected string $path = '';
+    protected string $base_route = '';
     protected string $stubs_path = '';
     protected string $controller_path = '';
     protected string $request_path = '';
