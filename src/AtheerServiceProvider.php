@@ -97,11 +97,16 @@ class AtheerServiceProvider extends ServiceProvider
 
     private function cacheSettings()
     {
-        if($locale = Cache::get('locale')){
-            if(in_array($locale, Atheer::languageCodes())){
-                Config::set('app.locale', $locale);
-            }
-        } 
+        try{
+            if($locale = Cache::get('locale')){
+                if(in_array($locale, Atheer::languageCodes())){
+                    Config::set('app.locale', $locale);
+                }
+            } 
+        }
+        catch(Exception $e){
+            
+        }
     }
 
     private function loadRoutes()
