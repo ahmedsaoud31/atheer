@@ -1,1 +1,5 @@
-<x-atheer-components::inputs.toggle class="mb-3" name="{{name}}" :label="__('{{title}}')" :model="$model ?? null" />
+<x-atheer-components::inputs.toggle
+  class="mb-3" name="{{name}}"
+  :label="__('{{title}}')"
+  :model="$model ?? null"
+/>

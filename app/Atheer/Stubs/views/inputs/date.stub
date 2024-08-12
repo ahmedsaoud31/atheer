@@ -1,1 +1,6 @@
-<x-atheer-components::inputs.input class="mb-3" name="{{name}}" type="date" :label="__('{{title}}')" :model="$model ?? null"/>
+<x-atheer-components::inputs.input
+  class="mb-3" name="{{name}}"
+  type="date"
+  :label="__('{{title}}')"
+  :model="$model ?? null"
+/>

@@ -1,1 +1,4 @@
-<x-atheer-components::inputs.toggle name="{{name}}" :model="$model ?? null" />
+<x-atheer-components::inputs.toggle
+  name="{{name}}"
+  :model="$model ?? null"
+/>

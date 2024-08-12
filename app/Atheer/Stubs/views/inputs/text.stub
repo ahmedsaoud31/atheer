@@ -1,1 +1,6 @@
-<x-atheer-components::inputs.input class="mb-3" name="{{name}}" :label="__('{{title}}')" :placeholder="__('Enter').' '.__('{{name}}').' ...'" :model="$model ?? null" />
+<x-atheer-components::inputs.input
+  class="mb-3" name="{{name}}"
+  :label="__('{{title}}')"
+  :placeholder="__('Enter').' '.__('{{name}}').' ...'"
+  :model="$model ?? null"
+/>
