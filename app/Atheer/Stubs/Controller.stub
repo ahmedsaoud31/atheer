@@ -15,17 +15,15 @@ use Atheer;
 
 class {{ itemUpperName }}Controller extends AtheerController
 {
-    protected $data = [];
-    protected $repository;
-    protected $view;
-    protected $route;
-    protected $model;
 
-    public function __construct({{ itemUpperName }}Repository $repository)
+    public function __construct(
+        protected Array $data = [],
+        protected $model = null,
+        protected String $view = 'atheer::groups.{{ groupLowerName }}.{{ itemLowerName }}',
+        protected String $route = 'atheer.{{ groupLowerName }}.{{ itemLowerName }}',
+        protected {{ itemUpperName }}Repository $repository = new {{ itemUpperName }}Repository,
+        )
     {
-        $this->view = 'atheer::groups.{{ groupLowerName }}.{{ itemLowerName }}';
-        $this->route = 'atheer.{{ groupLowerName }}.{{ itemLowerName }}';
-        $this->repository = $repository;
         $this->model = $this->repository->model();
         
         $toBlade =  (object)[];
