@@ -2,17 +2,18 @@
 
 namespace Atheer;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Config;
+use Cache;
+use Atheer\Facades\Atheer;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Foundation\AliasLoader;
-use Illuminate\Pagination\Paginator;
-use Atheer\Console\Commands\AtheerCommand;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\ServiceProvider;
 use Atheer\Console\Commands\MakeCommand;
-use Atheer\Console\Commands\DeleteCommand;
 use Atheer\Console\Commands\FreshCommand;
-use Atheer\Facades\Atheer;
-use Cache;
+use Atheer\Console\Commands\AtheerCommand;
+use Atheer\Console\Commands\DeleteCommand;
 
 class AtheerServiceProvider extends ServiceProvider
 {
@@ -97,15 +98,12 @@ class AtheerServiceProvider extends ServiceProvider
 
     private function cacheSettings()
     {
-        try{
+        if(Schema::hasTable('locale')){
             if($locale = Cache::get('locale')){
                 if(in_array($locale, Atheer::languageCodes())){
                     Config::set('app.locale', $locale);
                 }
             } 
-        }
-        catch(Exception $e){
-            
         }
     }
 
