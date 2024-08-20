@@ -7,6 +7,9 @@
 	      	<div class="spinner-border spinner-border-sm m-0 ms-auto d-none"></div>
 	      </a>
 	    </div>
+	    <div class="card-footer d-flex align-items-center">
+	      {{ $records->links() }}
+	    </div>
 	    <div class="table-responsive">
 	      <table id="atheerTable" class="table card-table table-vcenter text-nowrap datatable">
 	        <thead>
