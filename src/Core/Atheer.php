@@ -135,9 +135,15 @@ class Atheer
         return url('/atheer_public');
     }
 
-    public function Load(String $path): string
+    public function Load(String $path, $folder = 'atheer_public'): string
     {
-        return url("/atheer_public/{$path}") . '?' . filemtime(public_path("/atheer_public/{$path}"));
+        $file = public_path("/{$folder}/{$path}");
+        if(file_exists($file)){
+            return url("/{$folder}/{$path}") . '?' . filemtime($file);
+        }else{
+            return url("/{$folder}/{$path}");
+        }
+        
     }
 
     public function getTables(): array
