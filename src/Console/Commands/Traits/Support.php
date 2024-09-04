@@ -113,6 +113,8 @@ trait Support
         $group_name = $this->toCamelFirst($group_name);
         Schema::disableForeignKeyConstraints();
         $tables = \DB::select('SHOW TABLES');
+        $tables = json_decode(json_encode($tables), true);
+        $tables = collect($tables)->flatten()->toArray();
         foreach(File::directories("{$this->view_path}/". $this->toSnakeDash($group_name)) as $dir){
             $temp = str_replace('\\', '/', $dir);
             $temp = explode('/', $temp);
