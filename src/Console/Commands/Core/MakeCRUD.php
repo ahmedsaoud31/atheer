@@ -180,12 +180,12 @@ class MakeCRUD extends Make
                     'index',
                     'forms/create', 'forms/edit', 'forms/form',
                     'modals/create', 'modals/edit',
-                    'scripts/create', 'scripts/edit', 'scripts/delete',
+                    'scripts/create', 'scripts/edit', 'scripts/delete', 'scripts/form',
                     'tables/main', 'tables/row'
                 ] as $name){
 
             if(in_array($name, [
-                                'modals/create', 'modals/edit', 'scripts/create',
+                                'modals/create', 'modals/edit', 'scripts/create', 'scripts/form',
                                 'scripts/edit', 'scripts/delete', 'tables/row'
                                 ]) && config('atheer.use_templates')){
                 $stub = File::get("{$this->stubs_path}/views/{$name}-template.stub");

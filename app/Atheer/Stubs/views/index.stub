@@ -25,13 +25,14 @@
   </div>
 @endsection
 
-<!-- Ajax section -->
+
 @push('scripts')
+<!-- Ajax section -->
 <script>
   // change this to enable or disable ajax
   var ajax = true;
 </script>
-@endpush
+<!-- End Ajax section -->
 
 <!-- Create script -->
 @include("{$atheer->view}.scripts.create")
@@ -47,4 +48,8 @@
 @include("{$atheer->view}.scripts.delete")
 <!-- End Delete script -->
 
-<!-- End Ajax section -->
+<!-- Form script -->
+@include("{$atheer->view}.scripts.form")
+<!-- End Form script -->
+@endpush
+

@@ -51,5 +51,11 @@
         <!-- Inject js -->
         @stack('scripts')
         
+        <!-- Inject modals -->
+        @stack('modals')
+
+        <!-- Ajax spinner -->
+        @include("atheer::layouts.spinner")
+        
     </body>
 </html>

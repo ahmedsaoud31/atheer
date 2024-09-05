@@ -1,0 +1,2 @@
+<!-- If you want to customise form script copy content of "atheer::support.templates.scripts.form" here and customise it --> 
+@include('atheer::support.templates.scripts.form')
