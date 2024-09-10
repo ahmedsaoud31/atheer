@@ -3,7 +3,7 @@
 	<textarea 
 			id="{{ $id }}"
 			name="{{ $name }}"
-			class="form-control{{ $errors->has($name)?' is-invalid':(old($name)?' is-valid':'') }}"
+			class="form-control{{ $errors->has($name)?' is-invalid':(old($name)?' is-valid':'') }} {{ $inputClass ?? '' }}"
 			placeholder="{{ $placeholder }}"
 			{{ $attributes['rows'] ?? '3' }}
 			rows="10"

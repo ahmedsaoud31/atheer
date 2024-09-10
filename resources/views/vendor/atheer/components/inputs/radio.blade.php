@@ -5,7 +5,7 @@
         <input 	type="radio"
         		id="radio-{{ $radio->value }}"
         		name="{{ $name }}"
-        		class="custom-control-input {{ $errors->has($name)?'is-invalid':(old($name)?'is-valid':'') }}"
+        		class="custom-control-input {{ $errors->has($name)?'is-invalid':(old($name)?'is-valid':'') }} {{ $inputClass ?? '' }}"
 				value="{{ $radio->value }}"
 				{{ $radio->checked }}
         		>

@@ -18,6 +18,7 @@ class Select extends Component
         public $options = [],
         public $preoptions = [],
         public $disabled = false,
+        public $inputClass = '',
     ) {
         
     }

@@ -17,6 +17,7 @@ class Textarea extends Component
         public $id = '',
         public $placeholder = '',
         public $value = '',
+        public $inputClass = '',
     ) {
         $this->setValue();
     }

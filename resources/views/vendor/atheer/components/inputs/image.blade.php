@@ -10,7 +10,7 @@
     @endif
     <input  type="file"
             name="{{ $name }}"
-            class="form-control {{ $errors->has($name)?'is-invalid':(old($name)?'is-valid':'') }}"
+            class="form-control {{ $errors->has($name)?'is-invalid':(old($name)?'is-valid':'') }} {{ $inputClass ?? '' }}"
             id="{{ $name }}"
             aria-describedby="{{ $name }}Help"
             placeholder="{{ $placeholder }}"

@@ -10,6 +10,8 @@ use App\Models{{ modelNameSpace }}\{{ itemUpperName }} as MainModel;
 class {{ itemUpperName }}Repository
 {
     protected $fillable = {{ fillable }};
+    protected $id = false;
+    protected $model = false;
     
     public function model()
     {
@@ -53,7 +55,13 @@ class {{ itemUpperName }}Repository
 
     public function byId($id)
     {
-        return $this->query()->whereId($id)->firstOrFail();
+        if($this->id != $id){
+            $this->id = $id;
+            $this->model = $this->query()
+                                ->whereId($id)
+                                ->firstOrFail();
+        }
+        return $this->model;
     }
     
     public function paginate($pages)

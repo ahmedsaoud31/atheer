@@ -3,7 +3,7 @@
 	<div class="input-group input-group-flat">
 		<input	type="password"
 				name="{{ $name }}"
-				class="form-control {{ $errors->has($name)?'is-invalid':(old($name)?'is-valid':'') }}"
+				class="form-control {{ $errors->has($name)?'is-invalid':(old($name)?'is-valid':'') }} {{ $inputClass ?? '' }}"
 				placeholder="{{ $placeholder }}"
 				value="{{ $value }}"
 		>

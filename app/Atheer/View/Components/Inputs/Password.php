@@ -17,6 +17,7 @@ class Password extends Component
         public $name = '',
         public $placeholder = '',
         public $value = '',
+        public $inputClass = '',
     ) {
         
     }

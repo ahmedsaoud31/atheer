@@ -3,7 +3,7 @@
 	<select 
 			{{ $disabled ? 'disabled' : '' }}
 			name="{{ $name }}"
-			class="form-select {{ $errors->has($name)?'is-invalid':(old($name)?'is-valid':'') }}"
+			class="form-select {{ $errors->has($name)?'is-invalid':(old($name)?'is-valid':'') }} {{ $inputClass ?? '' }}"
 			>
 		@if($placeholder)
 		<option value="">{{ $placeholder }}</option>

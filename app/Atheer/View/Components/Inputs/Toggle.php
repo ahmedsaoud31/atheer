@@ -17,6 +17,7 @@ class Toggle extends Component
         public $name = '',
         public $placeholder = '',
         public $value = '',
+        public $inputClass = '',
     ) {
         $this->setValue();
     }

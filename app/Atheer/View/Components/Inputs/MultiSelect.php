@@ -22,6 +22,7 @@ class MultiSelect extends Component
         public $options = [],
         public $selectedOptions = [],
         public $disabled = false,
+        public $inputClass = '',
     ) {
         
     }

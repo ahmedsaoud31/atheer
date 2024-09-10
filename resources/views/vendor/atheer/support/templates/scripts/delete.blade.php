@@ -28,7 +28,11 @@
                 $('#spinner').show()
               },
               error: function (xhr){
-                toastr.error(xhr.status + ': ' + xhr.responseJSON.message)
+                if(xhr.status == 499){
+                  toastr.error(xhr.responseJSON.message)
+                }else{
+                  toastr.error(xhr.status + ': ' + xhr.statusText)
+                }
                 _this.find('.spinner-border').removeClass('d-inline').addClass('d-none')
                 $('#spinner').hide()
               }
@@ -42,7 +46,7 @@
                 }
                 _this.find('.spinner-border').removeClass('d-inline').addClass('d-none')
                 $('#spinner').hide()
-          });
+          })
         }
       })
       return false

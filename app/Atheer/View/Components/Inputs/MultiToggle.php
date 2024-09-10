@@ -18,6 +18,7 @@ class MultiToggle extends Component
         public $placeholder = '',
         public $options = [],
         public $selections = [],
+        public $inputClass = '',
     ) {
         $this->setValue();
     }
