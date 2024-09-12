@@ -2,9 +2,9 @@
 <script>
   $(function() {
     $('#atheerTable').on('click', '.delete', function(){
-      var _this = $(this)
+      let _this = $(this)
       if(!ajax) return false
-      var id = _this.parents('.table-row').attr('data-id')
+      let id = _this.parents('.table-row').attr('data-id')
       Swal.fire({
         title: "{{ __('Are you sure?') }}",
         text: "{{ __('You will not be able to revert this!') }}",
@@ -16,7 +16,7 @@
         cancelButtonText: "{{ __('Cancel') }}"
       }).then((result) => {
         if (result.isConfirmed) {
-          var sendData = {
+          let sendData = {
                           "_token": "{{ csrf_token() }}"
                           }
           $.ajax({

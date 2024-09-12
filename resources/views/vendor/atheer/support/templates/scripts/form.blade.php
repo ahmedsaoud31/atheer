@@ -7,10 +7,10 @@
   $(function(){
     $( "#createModal" ).on("create_loaded", function(event) {
         $('#createModal .simplemde textarea').each(function() {
-            var simplemde = new SimpleMDE({
+            let simplemde = new SimpleMDE({
               element: this,
             })
-            var name = this.name
+            let name = this.name
             $("#createModal").focus(function () {
               simplemde.codemirror.refresh()
             })
@@ -26,10 +26,10 @@
 
     $( "#editModal" ).on("edit_loaded", function(event) {
         $('#editModal .simplemde textarea').each(function() {
-            var simplemde = new SimpleMDE({
+            let simplemde = new SimpleMDE({
               element: this,
             })
-            var name = this.name
+            let name = this.name
             $("#editModal").focus(function () {
               simplemde.codemirror.refresh()
             })

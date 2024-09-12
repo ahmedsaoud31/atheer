@@ -5,12 +5,12 @@
     fValidation().setPublicErrorHeader('{{ __("Please fix form validation") }}')
     
     $('#atheerTable').on('click', '.edit', function(){
-      var _this = $(this)
+      let _this = $(this)
       if(!ajax) return false
-      var sendData = {
+      let sendData = {
                       "_token": "{{ csrf_token() }}"
                       }
-      var id = _this.parents('.table-row').attr('data-id')
+      let id = _this.parents('.table-row').attr('data-id')
       $.ajax({
           type: "GET",
           url: "{{ route("{$atheer->route}.index") }}/" + id + "/edit",
@@ -45,7 +45,7 @@
     })
 
     $('#editModal').on('click', '.submit', function(){
-      var _this = $(this)
+      let _this = $(this)
       $.ajax({
           type: "PUT",
           url: "{{ route("{$atheer->route}.index") }}/" + _this.attr('data-id'),
@@ -57,13 +57,14 @@
           error: function (xhr){
             if(xhr.status == 499){
               toastr.error(xhr.responseJSON.message)
+            }else if(xhr.status == 422){
+              toastr.warning('{{ __('Validate input data') }}')
+              fValidation('#editModal', xhr.responseJSON.errors).validate()
             }else{
               toastr.error(xhr.status + ': ' + xhr.statusText)
             }
             _this.find('.spinner-border').removeClass('d-inline').addClass('d-none')
             $('#spinner').hide()
-            fValidation('#editModal', xhr.responseJSON.errors).validate()
-            toastr.warning('{{ __('Validate input data') }}')
           }
           }).done(function(data, textStatus, xhr){
             if(xhr.status != 200){

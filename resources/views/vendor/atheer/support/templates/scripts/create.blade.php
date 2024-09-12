@@ -5,9 +5,9 @@
     fValidation().setPublicErrorHeader('{{ __("Please fix form validation") }}')
 
     $('#atheerCreate').on('click', '.create', function(){
-      var _this = $(this)
+      let _this = $(this)
       if(!ajax) return false
-      var sendData = {"_token": "{{ csrf_token() }}"}
+      let sendData = {"_token": "{{ csrf_token() }}"}
       $.ajax({
           type: "GET",
           url: "{{ route("{$atheer->route}.index") }}/create",
@@ -41,7 +41,7 @@
     })
 
     $('#createModal').on('click', '.submit', function(){
-      var _this = $(this)
+      let _this = $(this)
       $.ajax({
           type: "POST",
           url: "{{ route("{$atheer->route}.index") }}",
@@ -53,13 +53,14 @@
           error: function (xhr){
             if(xhr.status == 499){
               toastr.error(xhr.responseJSON.message)
+            }else if(xhr.status == 422){
+              toastr.warning('{{ __('Validate input data') }}')
+              fValidation('#createModal', xhr.responseJSON.errors).validate()
             }else{
               toastr.error(xhr.status + ': ' + xhr.statusText)
             }
             _this.find('.spinner-border').removeClass('d-inline').addClass('d-none')
             $('#spinner').hide()
-            fValidation('#createModal', xhr.responseJSON.errors).validate()
-            toastr.warning('{{ __('Validate input data') }}')
           }
           }).done(function(data, textStatus, xhr){
             if(xhr.status != 200){
