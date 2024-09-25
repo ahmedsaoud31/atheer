@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Components\Inputs;
+namespace App\Atheer\View\Components\Inputs;
 
 use Illuminate\View\Component;
 
