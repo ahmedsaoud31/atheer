@@ -32,7 +32,7 @@ php artisan atheer:install
 ```
 
 ## Videos
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/rxWH4iV07yqd3Ezo/0.jpg)](https://youtu.be/7ECci1ufnUM?si=rxWH4iV07yqd3Ezo)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/7ECci1ufnUM/0.jpg)](https://youtu.be/7ECci1ufnUM?si=rxWH4iV07yqd3Ezo)
 
 
 ## Screenshots
