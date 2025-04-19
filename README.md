@@ -31,6 +31,10 @@ php artisan atheer:install
 /atheer
 ```
 
+## Videos
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/rxWH4iV07yqd3Ezo/0.jpg)](https://youtu.be/7ECci1ufnUM?si=rxWH4iV07yqd3Ezo)
+
+
 ## Screenshots
 ![Screenshot001.png](https://github.com/ahmedsaoud31/atheer/blob/main/Screenshots/Screenshot001.jpg?raw=true&v=2)
 ![Screenshot002.png](https://github.com/ahmedsaoud31/atheer/blob/main/Screenshots/Screenshot002.jpg?raw=true&v=2)
