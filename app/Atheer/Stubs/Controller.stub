@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Atheer\AtheerController;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Gate;
 use App\Repositories\Atheer\{{ groupUpperName }}\{{ itemUpperName }}Repository;
 
 use App\Http\Requests\Atheer\{{ groupUpperName }}\{{ itemUpperName }}\StoreRequest;
@@ -42,7 +43,7 @@ class {{ itemUpperName }}Controller extends AtheerController
      */
     public function index()
     {
-        $this->authorize('view', $this->model);
+		Gate::authorize('view', $this->model);
         $this->data['records'] = $this->repository->paginate(10);
         return view("{$this->view}.index", $this->data);
     }
@@ -52,7 +53,7 @@ class {{ itemUpperName }}Controller extends AtheerController
      */
     public function create()
     {
-        $this->authorize('view', $this->model);
+		Gate::authorize('view', $this->model);
         if(request()->ajax()){
             $body = view("{$this->view}.forms.form", $this->data)->render();
             return response()->json(['body' => $body], 200);
@@ -66,7 +67,7 @@ class {{ itemUpperName }}Controller extends AtheerController
      */
     public function store(StoreRequest $request)
     {
-        $this->authorize('create', $this->model);
+		Gate::authorize('create', $this->model);
         $id = $this->repository->create($request->validated());
         $this->data['record'] = $this->repository->byId($id);
         if(request()->ajax()){
@@ -83,7 +84,7 @@ class {{ itemUpperName }}Controller extends AtheerController
      */
     public function show(string $id)
     {
-        $this->authorize('view', $this->model);
+		Gate::authorize('view', $this->model);
     }
 
     /**
@@ -92,7 +93,7 @@ class {{ itemUpperName }}Controller extends AtheerController
     public function edit(string $id)
     {
         $this->data['model'] = $this->model = $this->repository->byId($id);
-        $this->authorize('view', $this->model);
+		Gate::authorize('view', $this->model);
         if(request()->ajax()){
             $body = view("{$this->view}.forms.form", $this->data)->render();
             return response()->json(['body' => $body], 200);
@@ -107,7 +108,7 @@ class {{ itemUpperName }}Controller extends AtheerController
     public function update(UpdateRequest $request, string $id)
     {
         $this->model = $this->repository->byId($id);
-        $this->authorize('update', $this->model);
+		Gate::authorize('update', $this->model);
         $this->repository->update($this->model, $request->validated());
         if(request()->ajax()){
             $this->data['record'] = $this->repository->first($id);
@@ -125,7 +126,7 @@ class {{ itemUpperName }}Controller extends AtheerController
     public function destroy(string $id)
     {
         $this->model = $this->repository->byId($id);
-        $this->authorize('delete', $this->model);
+		Gate::authorize('delete', $this->model);
         $this->model->delete();
         if(request()->ajax()){
             return response()->json(['message' => __("Data deleted successfully"), 'body' => ''], 200);
